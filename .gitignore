@@ -1,0 +1,14 @@
+*~
+\#*\#
+.cache/
+auto-save/
+auto-save-list/
+elpa/
+recentf
+.lsp-session-v1
+.dap-breakpoints
+eclipse.jdt.ls/
+projectile-bookmarks.eld
+tramp
+workspace/
+myinit.el

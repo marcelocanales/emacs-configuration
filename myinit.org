@@ -1,0 +1,269 @@
+#+startup:overview
+* Environment Variables
+  #+begin_src emacs-lisp
+    (use-package exec-path-from-shell
+      :ensure t)
+
+    (dolist (var '("JAVA_HOME"))
+      (add-to-list 'exec-path-from-shell-variables var))
+
+    (exec-path-from-shell-initialize)
+
+
+    (setq auto-save-file-name-transforms
+	      `((".*" ,(concat user-emacs-directory "auto-save/") t))) 
+  #+end_src
+* Interface Tweeks
+#+begin_src emacs-lisp
+  ;; Disable startup message
+  (setq inhibit-startup-message t)
+  ;; Disable tool bar
+  (tool-bar-mode -1)
+  ;; Disable menu bar
+  (menu-bar-mode t)
+  ;; Disable scroll bar
+  (toggle-scroll-bar -1)
+  ;; Display line numbers
+  (global-display-line-numbers-mode t)
+  ;; Enable line highlight
+  (global-hl-line-mode t)
+
+  ;; Transparency configuration
+  ;;(set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+  ;;(add-to-list 'default-frame-alist '(alpha . (95 . 80)))
+#+end_src
+* Font
+  #+begin_src emacs-lisp
+    (set-frame-font "Source Code Pro 10" nil t)
+  #+end_src
+* Global Key Binding
+  #+begin_src emacs-lisp
+    ;; Personal global and generals key binding
+    (global-set-key (kbd "C-z") 'undo)
+  #+end_src
+* Buffers
+  #+begin_src emacs-lisp
+    (defalias 'list-buffers 'ibuffer)
+  #+end_src
+* Ido
+  #+begin_src emacs-lisp
+     (setq ido-enable-flex-matching t)
+     (setq ido-everywhere t)
+     (ido-mode 1)
+
+  #+end_src
+* Try
+#+begin_src emacs-lisp
+  (use-package try
+    :ensure t)
+#+end_src
+* Org-Mode
+#+begin_src emacs-lisp
+  ;; Org-Mode Stuff
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+   )
+#+end_src
+
+* Ace Window
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :init
+    (progn
+      (global-set-key [remap other-window] 'ace-window)
+      (custom-set-faces
+       '(aw-leading-char-face
+	 ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+      ))
+
+#+end_src
+
+* Which Key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
+#+end_src
+
+* Counsel
+  #+begin_src emacs-lisp
+    (use-package counsel
+      :ensure t)
+  #+end_src
+
+* Swipper
+  #+begin_src emacs-lisp
+    (use-package swiper
+	:ensure try
+	:bind (
+	       ("C-s" . swiper)
+	       ("C-r" . swiper)
+	       ("C-c C-r" . 'ivy-resume)
+	       ("M-x" . counsel-M-x)
+	       ("C-x C-f" . counsel-find-file)
+	      )
+	:config
+	(progn
+	  (ivy-mode)
+	  (setq ivy-use-virtual-buffers t)
+
+	  (setq enable-recursive-minibuffers t)
+	  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+	 ))
+  #+end_src
+
+* Avy
+  #+begin_example emacs-lisp
+    (use-package avy
+      :ensure t
+      :bind ("M-s" . avy-goto-char-2))
+  #+end_example
+
+* Auto Complete 
+#+begin_src emacs-lisp
+  ;;(use-package auto-complete
+  ;;  :ensure t
+  ;;  :init
+  ;;  (progn
+  ;;    (ac-config-default)
+  ;;    (global-auto-complete-mode t)
+  ;;    ))
+#+end_src
+* Indentation
+  #+begin_src emacs-lisp
+    (setq custom-tab-width 4)
+
+    (defun disable-tabs ()
+	      (interactive)
+      (setq indent-tabs-mode nil))
+
+    (defun enable-tabs ()
+	      (interactive)
+      (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+      (setq indent-tabs-mode t)
+      (setq tab-width custom-tab-width))
+
+    ;; Hooks to Enable Tabs
+    (add-hook 'prog-mode-hook 'enable-tabs)
+    ;; Hook to Disable Tabs
+    (add-hook 'lisp-mode-hook 'disable-tabs)
+    (add-hook 'java-mode-hook 'disable-tabs)
+  #+end_src
+* Company
+  #+begin_src emacs-lisp
+    (use-package company
+      :ensure t
+      :config
+      (setq company-dabbrev-downcase 0)
+      (setq company-idle-delay 0)
+      (setq company-idle-delay 0)
+      (setq company-minimum-prefix-length 3)
+    ; Wich One?
+    (global-company-mode t)
+	    (add-hook 'after-init-hook 'global-company-mode)
+	    )
+  #+end_src
+* Tree-sitter
+  #+begin_src emacs-lisp
+    ;; Tree sitter
+    (use-package tree-sitter
+      :ensure t
+      :config
+      (global-tree-sitter-mode t))
+
+    (use-package tree-sitter-langs
+      :ensure t)
+
+    (use-package treemacs-projectile
+      :after treemacs projectile
+      :ensure t)
+  #+end_src
+
+* Treemacs
+  #+begin_src emacs-lisp
+    (use-package treemacs
+      :ensure t)
+  #+end_src
+* Projectile
+  #+begin_src emacs-lisp
+    (use-package projectile
+      :ensure t
+      :init
+      (projectile-mode +1)
+      :bind (:map projectile-mode-map
+		  ("s-p" . projectile-command-map)
+		  ("C-c p" . projectile-command-map))
+      :config
+      (projectile-global-mode)
+      (setq projectile-completion-system 'ivy))
+  #+end_src
+* Flycheck
+  #+begin_src emacs-lisp
+    (use-package flycheck
+      :ensure t)
+  #+end_src
+* Rest Client
+  #+begin_src emacs-lisp
+    (use-package restclient
+      :ensure t)
+  #+end_src
+* LSP
+  #+begin_src emacs-lisp
+    (use-package lsp-mode
+      :ensure t
+      :init
+      (setq lsp-keymap-prefix "C-c l")
+      :hook (
+		     (java-mode . lsp)
+		     (lsp-mode . lsp-enable-which-key-integration))
+      :commands lsp)
+
+    (use-package lsp-ui
+      :ensure t
+      :commands lsp-ui-mode)
+
+    (use-package lsp-treemacs
+      :ensure t
+      :commands lsp-treemacs-errors-list)
+
+  #+end_src
+  
+* Themes
+  #+begin_src emacs-lisp
+    ;; Themes
+    (use-package gruvbox-theme
+      :ensure t
+      :config (load-theme 'gruvbox-dark-hard t))
+
+    (use-package cyberpunk-theme
+      :ensure t)
+
+    (use-package zenburn-theme
+      :ensure t)
+
+    (use-package monokai-theme
+      :ensure t)
+  #+end_src
+  
+* Custom functions
+  #+begin_src emacs-lisp
+    ;; Revisar esto, copiado de stackoverflow
+    ;; https://emacs.stackexchange.com/questions/23773/disable-scrollbar-on-new-frame
+    (defun my/disable-scroll-bars (frame)
+      (modify-frame-parameters frame
+			       '((vertical-scroll-bars . nil)
+				 (horizontal-scroll-bars . nil))))
+    (add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
+  #+end_src
+
