@@ -124,12 +124,12 @@
   #+end_src
 
 * Avy
-  #+begin_example emacs-lisp
+  #+begin_src emacs-lisp
     (use-package avy
       :ensure t
       :bind ("M-s" . avy-goto-char-2))
-  #+end_example
-
+  #+end_src
+  
 * Auto Complete 
 #+begin_src emacs-lisp
   ;;(use-package auto-complete
