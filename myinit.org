@@ -219,6 +219,7 @@
       :ensure t)
   #+end_src
 * LSP
+  
   #+begin_src emacs-lisp
     (use-package lsp-mode
       :ensure t
@@ -237,6 +238,17 @@
       :ensure t
       :commands lsp-treemacs-errors-list)
 
+    (use-package lsp-java
+      :ensure t
+      :hook (
+		     (java-mode . lsp))
+      :config
+      (setq lsp-java-vmargs
+		    '("-noverify"
+		      "-Xmx2G"
+		      "-XX:+UseG1GC"
+		      "-XX:+UseStringDeduplication"
+		      "-javaagent:/usr/local/share/lombok/lombok.jar")))
   #+end_src
   
 * Themes
