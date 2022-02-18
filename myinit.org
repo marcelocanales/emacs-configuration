@@ -130,16 +130,6 @@
       :bind ("M-s" . avy-goto-char-2))
   #+end_src
   
-* Auto Complete 
-#+begin_src emacs-lisp
-  ;;(use-package auto-complete
-  ;;  :ensure t
-  ;;  :init
-  ;;  (progn
-  ;;    (ac-config-default)
-  ;;    (global-auto-complete-mode t)
-  ;;    ))
-#+end_src
 * Indentation
   #+begin_src emacs-lisp
     (setq custom-tab-width 4)
