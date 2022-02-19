@@ -184,6 +184,15 @@
   #+begin_src emacs-lisp
     (use-package treemacs
       :ensure t)
+
+    (use-package all-the-icons
+      :ensure t
+      :if (display-graphic-p))
+
+    (use-package treemacs-all-the-icons
+      :ensure t)
+
+    (treemacs-load-theme "all-the-icons")
   #+end_src
 * Projectile
   #+begin_src emacs-lisp
