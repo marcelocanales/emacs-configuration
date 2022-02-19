@@ -1,4 +1,4 @@
-#+startup:overview
+#+starptup:overview
 * Environment Variables
   #+begin_src emacs-lisp
     (use-package exec-path-from-shell
@@ -101,7 +101,7 @@
     (use-package counsel
       :ensure t)
   #+end_src
-
+  
 * Swipper
   #+begin_src emacs-lisp
     (use-package swiper
@@ -277,8 +277,7 @@
   #+begin_src emacs-lisp
     ;; Themes
     (use-package gruvbox-theme
-      :ensure t
-      :config (load-theme 'gruvbox-dark-hard t))
+      :ensure t)
 
     (use-package cyberpunk-theme
       :ensure t)
@@ -288,16 +287,53 @@
 
     (use-package monokai-theme
       :ensure t)
+
+    (use-package doom-themes
+      :ensure t
+      :config
+      (progn
+            (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
+            (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
+            (load-theme 'doom-palenight t)))
   #+end_src
-  
+* Modeline
+  #+begin_src emacs-lisp
+    ;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
+    (use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode)
+      :config
+      (progn
+	    (setq doom-modeline-height 25)
+	    (setq doom-modeline-bar-width 6)
+	    (setq doom-modeline-hud nil)
+	    (setq doom-modeline-project-detection 'auto)
+	    (setq doom-modeline-lsp t)
+	    (setq doom-modeline-buffer-encoding t)
+	    (setq doom-modeline-checker-simple-format nil)
+	    (setq doom-modeline-minor-modes t)
+	    (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+	    (setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
+	    (setq doom-modeline-major-mode-icon t)
+	    ))
+
+    (use-package minions
+      :ensure t
+      :hook doom-modeline-mode
+      :config
+      (minions-mode t))
+
+    (custom-set-faces
+     '(mode-line ((t (:height 0.85))))
+     '(mode-line-inactive ((t (:height 0.85)))))
+  #+end_src
 * Custom functions
   #+begin_src emacs-lisp
-    ;; Revisar esto, copiado de stackoverflow
-    ;; https://emacs.stackexchange.com/questions/23773/disable-scrollbar-on-new-frame
+    ;; Frames disabble scroll bars
     (defun my/disable-scroll-bars (frame)
       (modify-frame-parameters frame
-			       '((vertical-scroll-bars . nil)
-				 (horizontal-scroll-bars . nil))))
+                               '((vertical-scroll-bars . nil)
+                                 (horizontal-scroll-bars . nil))))
     (add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
-  #+end_src
-
+  #+end_src  
+  

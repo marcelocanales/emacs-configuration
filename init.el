@@ -32,9 +32,10 @@
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes '(gruvbox-dark-hard))
+ '(custom-enabled-themes '(doom-palenight))
  '(custom-safe-themes
-   '("4eb6fa2ee436e943b168a0cd8eab11afc0752aebb5d974bba2b2ddc8910fca8f" "6b5c518d1c250a8ce17463b7e435e9e20faa84f3f7defba8b579d4f5925f60c1" "78e6be576f4a526d212d5f9a8798e5706990216e9be10174e3f3b015b8662e27" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "285d1bf306091644fb49993341e0ad8bafe57130d9981b680c1dbd974475c5c7" "9e3ea605c15dc6eb88c5ff33a82aed6a4d4e2b1126b251197ba55d6b86c610a1" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "78c4238956c3000f977300c8a079a3a8a8d4d9fee2e68bad91123b58a4aa8588" "7661b762556018a44a29477b84757994d8386d6edee909409fabe0631952dad9" default))
+   '("1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" "4eb6fa2ee436e943b168a0cd8eab11afc0752aebb5d974bba2b2ddc8910fca8f" "6b5c518d1c250a8ce17463b7e435e9e20faa84f3f7defba8b579d4f5925f60c1" "78e6be576f4a526d212d5f9a8798e5706990216e9be10174e3f3b015b8662e27" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "285d1bf306091644fb49993341e0ad8bafe57130d9981b680c1dbd974475c5c7" "9e3ea605c15dc6eb88c5ff33a82aed6a4d4e2b1126b251197ba55d6b86c610a1" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "78c4238956c3000f977300c8a079a3a8a8d4d9fee2e68bad91123b58a4aa8588" "7661b762556018a44a29477b84757994d8386d6edee909409fabe0631952dad9" default))
+ '(exwm-floating-border-color "#232635")
  '(fci-rule-color "#073642")
  '(highlight-changes-colors '("#d33682" "#6c71c4"))
  '(highlight-symbol-colors
@@ -54,14 +55,21 @@
  '(hl-fg-colors
    '("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36"))
  '(hl-paren-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
+ '(jdee-db-active-breakpoint-face-colors (cons "#1c1f2b" "#c792ea"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#1c1f2b" "#c3e88d"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#1c1f2b" "#676E95"))
+ '(lsp-treemacs-sync-mode t)
  '(lsp-ui-doc-border "#93a1a1")
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
+ '(objed-cursor-color "#ff5370")
  '(package-selected-packages
-   '(lsp-ivy treemacs-all-the-icons restclient company-lsp company company-mode treemacs-projectile flycheck monokai-theme solarized-theme zenburn-theme cyberpunk-theme counsel-projectile projectile lsp-ui exec-path-from-shell lsp-java lsp-mode iso-transl which-key use-package try tree-sitter-langs org-bullets gruvbox-theme counsel color-theme auto-complete ace-window))
+   '(doom-modeline minions doom-themes treemacs-all-the-icons restclient company-lsp company company-mode treemacs-projectile flycheck monokai-theme solarized-theme zenburn-theme cyberpunk-theme counsel-projectile projectile lsp-ui exec-path-from-shell lsp-java lsp-mode iso-transl which-key use-package try tree-sitter-langs org-bullets gruvbox-theme counsel color-theme auto-complete ace-window))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
+ '(rustic-ansi-faces
+   ["#292D3E" "#ff5370" "#c3e88d" "#ffcb6b" "#82aaff" "#c792ea" "#89DDFF" "#EEFFFF"])
  '(safe-local-variable-values
    '((eval setq lsp-java-configuration-maven-user-settings "/home/marcelo/work/bch/.m2/config/settings.xml")
 	 (eval load-theme 'solarized-light)))
@@ -103,6 +111,8 @@
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
  '(lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+ '(mode-line ((t (:height 0.85))))
+ '(mode-line-inactive ((t (:height 0.85))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
