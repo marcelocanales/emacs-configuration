@@ -247,7 +247,26 @@
 		      "-Xmx2G"
 		      "-XX:+UseG1GC"
 		      "-XX:+UseStringDeduplication"
-		      "-javaagent:/usr/local/share/lombok/lombok.jar")))
+		      "-javaagent:/usr/local/share/lombok/lombok.jar"))
+      (setq lsp-java-configuration-runtimes
+		    '[
+		      (
+		       :name "JavaSE-1.8"
+		       :path "/opt/oracle/java/jdk1.8.0_202"
+		       :default t)
+		      (
+		       :name "JavaSE-11"
+		       :path "/opt/oracle/java/jdk-11.0.12")]))
+
+
+
+
+
+
+
+
+
+
   #+end_src
   
 * Themes
