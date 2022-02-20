@@ -1,4 +1,4 @@
-#+startup:overview
+#+startup:overview indent
 * Environment Variables
   #+begin_src emacs-lisp
     (use-package exec-path-from-shell
