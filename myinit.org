@@ -1,4 +1,4 @@
-#+starptup:overview
+#+startup:overview
 * Environment Variables
   #+begin_src emacs-lisp
     (use-package exec-path-from-shell
@@ -183,7 +183,9 @@
 * Treemacs
   #+begin_src emacs-lisp
     (use-package treemacs
-      :ensure t)
+      :ensure t
+      :config
+      (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action))
 
     (use-package all-the-icons
       :ensure t
