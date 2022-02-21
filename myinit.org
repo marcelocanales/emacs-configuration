@@ -179,17 +179,18 @@
       :after treemacs projectile
       :ensure t)
   #+end_src
-
+* All The Icons
+#+begin_src emacs-lisp
+  (use-package all-the-icons
+    :ensure t
+    :if (display-graphic-p))
+#+end_src
 * Treemacs
   #+begin_src emacs-lisp
     (use-package treemacs
       :ensure t
       :config
       (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action))
-
-    (use-package all-the-icons
-      :ensure t
-      :if (display-graphic-p))
 
     (use-package treemacs-all-the-icons
       :ensure t)
@@ -274,7 +275,15 @@
 
 
   #+end_src
-  
+* DAP
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :after lsp-mode
+    :config (dap-auto-configure-mode))
+
+  (use-package dap-java
+    :ensure nil)
+#+end_src
 * Themes
   #+begin_src emacs-lisp
     ;; Themes
