@@ -64,7 +64,7 @@
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(objed-cursor-color "#ff5370")
  '(package-selected-packages
-   '(dap-java doom-modeline minions doom-themes treemacs-all-the-icons restclient company-lsp company company-mode treemacs-projectile flycheck monokai-theme solarized-theme zenburn-theme cyberpunk-theme counsel-projectile projectile lsp-ui exec-path-from-shell lsp-java lsp-mode iso-transl which-key use-package try tree-sitter-langs org-bullets gruvbox-theme counsel color-theme auto-complete ace-window))
+   '(all-the-icons-dired all-the-icons-ivy dap-java doom-modeline minions doom-themes treemacs-all-the-icons restclient company-lsp company company-mode treemacs-projectile flycheck monokai-theme solarized-theme zenburn-theme cyberpunk-theme counsel-projectile projectile lsp-ui exec-path-from-shell lsp-java lsp-mode iso-transl which-key use-package try tree-sitter-langs org-bullets gruvbox-theme counsel color-theme auto-complete ace-window))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
