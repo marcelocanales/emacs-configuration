@@ -14,3 +14,5 @@ tramp
 workspace/
 myinit.el
 ido.last
+private.org
+private.el

@@ -62,6 +62,8 @@
   ;; Org-Mode Stuff
   (use-package org-bullets
     :ensure t
+    :custom (org-bullets-bullet-list
+                     '("●" "○" "▶" "◆" "◇")) (org-ellipsis "⤵")
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
@@ -73,6 +75,10 @@
    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
    '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
    )
+
+  ;; Org TODO States
+  (setq org-todo-keywords
+            '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
 #+end_src
 
 * Ace Window
@@ -96,6 +102,31 @@
     :config (which-key-mode))
 #+end_src
 
+* Super Save
+#+begin_src emacs-lisp
+  (use-package super-save
+    :ensure t
+    :config
+    (super-save-mode +1))
+
+  (setq super-save-auto-save-when-idle t)
+
+  ;;Auto Save default disabled
+  (setq auto-save-default nil)
+
+
+  ;; add integration with ace-window
+  (add-to-list 'super-save-triggers 'ace-window)
+
+  ;; save on find-file
+  (add-to-list 'super-save-hook-triggers 'find-file-hook)
+
+  ;; Turn off super-save remote files
+  (setq super-save-remote-files nil)
+
+  ;; Super save exclude example
+  ;;(setq super-save-exclude '(".gpg"))
+#+end_src
 * Counsel
   #+begin_src emacs-lisp
     (use-package counsel
@@ -152,18 +183,25 @@
   #+end_src
 * Company
   #+begin_src emacs-lisp
-    (use-package company
-      :ensure t
-      :config
-      (setq company-dabbrev-downcase 0)
-      (setq company-idle-delay 0)
-      (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 3)
-    ; Wich One?
-    (global-company-mode t)
-	    (add-hook 'after-init-hook 'global-company-mode)
-	    )
+        (use-package company
+          :ensure t
+          :config
+          (setq company-dabbrev-downcase 0)
+          (setq company-idle-delay 0)
+          (setq company-minimum-prefix-length 3)
+          (setq lsp-completion-provider :capf))
+        ; Wich One?
+        (global-company-mode t)
+        (add-hook 'after-init-hook 'global-company-mode)
+
   #+end_src
+* Yasnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (yas-global-mode))
+#+end_src
 * Tree-sitter
   #+begin_src emacs-lisp
     ;; Tree sitter
@@ -229,16 +267,19 @@
       :ensure t)
   #+end_src
 * LSP
-  
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
     (use-package lsp-mode
       :ensure t
       :init
       (setq lsp-keymap-prefix "C-c l")
       :hook (
-		     (java-mode . lsp)
-		     (lsp-mode . lsp-enable-which-key-integration))
-      :commands lsp)
+             (java-mode . lsp)
+                     (c-mode . lsp)
+                     (c++-mode . lsp)
+                     (lsp-mode . lsp-enable-which-key-integration))
+      :commands lsp
+      :config
+    (setq lsp-completion-enable-additional-text-edit t))
 
     (use-package lsp-ui
       :ensure t
@@ -255,33 +296,25 @@
     (use-package lsp-java
       :ensure t
       :hook (
-		     (java-mode . lsp))
+                     (java-mode . lsp))
       :config
       (setq lsp-java-vmargs
-		    '("-noverify"
-		      "-Xmx2G"
-		      "-XX:+UseG1GC"
-		      "-XX:+UseStringDeduplication"
-		      "-javaagent:/usr/local/share/lombok/lombok.jar"))
+                    '("-noverify"
+                      "-Xmx2G"
+                      "-XX:+UseG1GC"
+                      "-XX:+UseStringDeduplication"
+                      "-javaagent:/usr/local/share/lombok/lombok.jar"))
       (setq lsp-java-configuration-runtimes
-		    '[
-		      (
-		       :name "JavaSE-1.8"
-		       :path "/opt/oracle/java/jdk1.8.0_202"
-		       :default t)
-		      (
-		       :name "JavaSE-11"
-		       :path "/opt/oracle/java/jdk-11.0.12")]))
+                    '[
+                      (
+                       :name "JavaSE-1.8"
+                       :path "/opt/oracle/java/jdk1.8.0_202"
+                       :default t)
+                      (
+                       :name "JavaSE-11"
+                       :path "/opt/oracle/java/jdk-11.0.12")]))
 
-
-
-
-
-
-
-
-
-
+    (setq lsp-idle-delay 0.500)
   #+end_src
 * DAP
 #+begin_src emacs-lisp
@@ -313,7 +346,7 @@
       (progn
             (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
             (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
-            (load-theme 'doom-palenight t)))
+            (load-theme 'doom-gruvbox t)))
   #+end_src
 * Modeline
   #+begin_src emacs-lisp
@@ -338,16 +371,23 @@
 
     (use-package minions
       :ensure t
-      :hook doom-modeline-mode
+;      :hook doom-modeline-mode
       :config
-      (minions-mode t))
+    (minions-mode t))
 
     (custom-set-faces
      '(mode-line ((t (:height 0.85))))
      '(mode-line-inactive ((t (:height 0.85)))))
   #+end_src
+* Performance
+#+begin_src emacs-lisp
+  (setq read-process-output-max (* 2048 2048))
+
+  (setq gc-cons-threshold 400000000)
+#+end_src
 * Custom functions
-  #+begin_src emacs-lisp
+** Scroll Control 
+#+begin_src emacs-lisp
     ;; Frames disabble scroll bars
     (defun my/disable-scroll-bars (frame)
       (modify-frame-parameters frame
@@ -355,4 +395,11 @@
                                  (horizontal-scroll-bars . nil))))
     (add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
   #+end_src  
-  
+** Auto Revert
+#+begin_src emacs-lisp
+  ;; Revert Dired and other buffers
+  (setq global-auto-revert-non-file-buffers t)
+
+  ;; Revert buffers when the underlying file has changed
+  (global-auto-revert-mode 1)
+#+end_src
