@@ -36,6 +36,21 @@
   #+begin_src emacs-lisp
     (set-frame-font "Source Code Pro 10" nil t)
   #+end_src
+* Matching Delimiters
+#+begin_src emacs-lisp
+  ;; Electric Pair
+  (electric-pair-mode t)
+#+end_src
+* Wrap and truncate lines
+#+begin_src emacs-lisp
+  (add-hook 'text-mode-hook
+                    '(lambda()
+                           (setq truncate-lines nil word-wrap t)))
+
+  (add-hook 'prog-mode-hook
+                    '(lambda()
+                           (setq truncate-lines t word-wrap nil)))
+#+end_src
 * Global Key Binding
   #+begin_src emacs-lisp
     ;; Personal global and generals key binding
