@@ -216,6 +216,9 @@
     :ensure t
     :config
     (yas-global-mode))
+
+  (use-package yasnippet-snippets
+    :ensure t)
 #+end_src
 * Tree-sitter
   #+begin_src emacs-lisp
