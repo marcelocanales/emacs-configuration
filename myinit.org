@@ -11,7 +11,18 @@
 
 
     (setq auto-save-file-name-transforms
-	      `((".*" ,(concat user-emacs-directory "auto-save/") t))) 
+              `((".*" ,(concat user-emacs-directory "auto-save/") t))) 
+
+
+    ;; Backups
+    ;; Don't clutter up directories with files~
+    (setq backup-directory-alist `(("." . ,(expand-file-name
+                                            (concat dotfiles-dir "backups")))))
+
+
+    (setq undo-limit 100)
+    
+
   #+end_src
 * Interface Tweeks
 #+begin_src emacs-lisp
@@ -34,7 +45,8 @@
 #+end_src
 * Font
   #+begin_src emacs-lisp
-    (set-frame-font "Source Code Pro 10" nil t)
+    ;;(set-frame-font "Source Code Pro 10" nil t)
+    (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))
   #+end_src
 * Matching Delimiters
 #+begin_src emacs-lisp
@@ -171,17 +183,27 @@
 
 * Avy
   #+begin_src emacs-lisp
-    (use-package avy
-      :ensure t
+    (use-package avy 
+     :ensure t
       :bind ("M-s" . avy-goto-char-2))
   #+end_src
   
+* Silversearcher
+#+begin_src emacs-lisp
+  (use-package ag
+    :ensure t
+    :config
+    (setq ag-highlight-search t))
+#+end_src
 * Undo-Tree
 #+begin_src emacs-lisp
   (use-package undo-tree
     :ensure t
     :init
     (global-undo-tree-mode t))
+
+  ;; Prevent undo tree files from polluting your git repo
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
 #+end_src
 * Indentation
   #+begin_src emacs-lisp
@@ -293,59 +315,78 @@
   #+end_src
 * LSP
 #+begin_src emacs-lisp
-    (use-package lsp-mode
-      :ensure t
-      :init
-      (setq lsp-keymap-prefix "C-c l")
-      :hook (
-             (java-mode . lsp)
-                     (c-mode . lsp)
-                     (c++-mode . lsp)
-                     (lsp-mode . lsp-enable-which-key-integration))
-      :commands lsp
-      :config
-    (setq lsp-completion-enable-additional-text-edit t))
+  (use-package lsp-mode
+    :ensure t
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :hook (
+           (java-mode . lsp)
+                   (c-mode . lsp)
+                   (c++-mode . lsp)
+                   (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp
+    :config
+  (setq lsp-completion-enable-additional-text-edit t))
 
-    (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui-mode)
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
 
-    (use-package lsp-treemacs
-      :ensure t
-      :commands lsp-treemacs-errors-list)
+  (use-package lsp-treemacs
+    :ensure t
+    :commands lsp-treemacs-errors-list)
 
-    (use-package lsp-ivy
-      :ensure t
-      :commands lsp-ivy-workspace-symbol)
+  (use-package lsp-ivy
+    :ensure t
+    :init
+    :bind
+    (
+     ("C-c l g s" . 'lsp-ivy-workspace-symbol)
+     ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
+    :commands lsp-ivy-workspace-symbol)
 
-    (use-package lsp-java
-      :ensure t
-      :hook (
-                     (java-mode . lsp))
-      :config
-      (setq lsp-java-vmargs
-                    '("-noverify"
-                      "-Xmx2G"
-                      "-XX:+UseG1GC"
-                      "-XX:+UseStringDeduplication"
-                      "-javaagent:/usr/local/share/lombok/lombok.jar"))
-      (setq lsp-java-configuration-runtimes
-                    '[
-                      (
-                       :name "JavaSE-1.8"
-                       :path "/opt/oracle/java/jdk1.8.0_202"
-                       :default t)
-                      (
-                       :name "JavaSE-11"
-                       :path "/opt/oracle/java/jdk-11.0.12")]))
+  (use-package lsp-java
+    :ensure t
+    :hook (
+                   (java-mode . lsp))
+    :config
+    (setq lsp-java-vmargs
+                  '("-noverify"
+                    "-Xmx2G"
+                    "-XX:+UseG1GC"
+                    "-XX:+UseStringDeduplication"
+                    "-javaagent:/usr/local/share/lombok/lombok.jar"))
+    (setq lsp-java-configuration-runtimes
+                  '[
+                    (
+                     :name "JavaSE-1.8"
+                     :path "/opt/oracle/java/jdk1.8.0_202"
+                     :default t)
+                    (
+                     :name "JavaSE-11"
+                     :path "/opt/oracle/java/jdk-11.0.12")]))
 
-    (setq lsp-idle-delay 0.500)
+  (setq lsp-idle-delay 0.500)
   #+end_src
 * DAP
 #+begin_src emacs-lisp
   (use-package dap-mode
     :after lsp-mode
-    :config (dap-auto-configure-mode))
+    :config
+    (dap-auto-configure-mode)
+    (dap-mode t)					                                                                                                                                                                                                                                                              
+    (dap-ui-mode t)                                                                                                                                                                                                                                                                           
+    (dap-tooltip-mode 1)                                                                                                                                                                                                                                                                      
+    (tooltip-mode 1)                                                                                                                                                                                                                                                                          
+    (dap-register-debug-template                                                                                                                                                                                                                                                              
+     "localhost:8453"
+     (list :type "java"
+           :request "attach"
+           :hostName "localhost"
+           :port 8453
+                   :projectName: "venta")
+     )                                                                                                                                                                                                                                                                       
+  )
 
   (use-package dap-java
     :ensure nil)
@@ -371,7 +412,8 @@
       (progn
             (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
             (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
-            (load-theme 'doom-gruvbox t)))
+                    (load-theme 'doom-gruvbox t)))		
+       ;     (load-theme 'doom-palenight t)))
   #+end_src
 * Modeline
   #+begin_src emacs-lisp
