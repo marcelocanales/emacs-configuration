@@ -107,7 +107,26 @@
   (setq org-todo-keywords
             '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
 #+end_src
+* Org-Roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t)
 
+
+  (use-package org-roam
+    :ensure t
+    :custom
+    (org-roam-completion-everywhere t)
+    (org-roam-directory (file-truename "~/Documents/roam-notes/"))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point))
+    :config
+    (org-roam-setup))
+#+end_src
 * Ace Window
 #+begin_src emacs-lisp
   (use-package ace-window
