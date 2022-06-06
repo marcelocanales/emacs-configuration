@@ -106,6 +106,9 @@
   ;; Org TODO States
   (setq org-todo-keywords
             '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
+
+  ;; Indent mode by default
+  (add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
 * Org-Roam
 #+begin_src emacs-lisp
@@ -126,6 +129,22 @@
            ("C-M-i" . completion-at-point))
     :config
     (org-roam-setup))
+#+end_src
+* Org-Roam-UI
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    :straight
+      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start t))
 #+end_src
 * Ace Window
 #+begin_src emacs-lisp
