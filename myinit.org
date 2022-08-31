@@ -86,11 +86,12 @@
 #+end_src
 * Org-Mode
 #+begin_src emacs-lisp
+(straight-use-package '(org :type built-in))
   ;; Org-Mode Stuff
   (use-package org-bullets
     :ensure t
     :custom (org-bullets-bullet-list
-                     '("●" "○" "▶" "◆" "◇")) (org-ellipsis "⤵")
+		     '("●" "○" "▶" "◆" "◇")) (org-ellipsis "⤵")
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
@@ -105,7 +106,7 @@
 
   ;; Org TODO States
   (setq org-todo-keywords
-            '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
+	    '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
 
   ;; Indent mode by default
   (add-hook 'org-mode-hook 'org-indent-mode)
@@ -113,14 +114,22 @@
 * Org-Roam
 #+begin_src emacs-lisp
   (use-package org-roam
-    :ensure t)
-
-
-  (use-package org-roam
     :ensure t
+    :after org
     :custom
     (org-roam-completion-everywhere t)
     (org-roam-directory (file-truename "~/Documents/roam-notes/"))
+    (org-roam-capture-templates
+     '(("d" "default" plain
+            "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+  ("l" "programming language" plain
+   "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+   :unnarrowed t)
+
+     ))
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n g" . org-roam-graph)
@@ -265,16 +274,19 @@
   #+end_src
 * Company
   #+begin_src emacs-lisp
-        (use-package company
-          :ensure t
-          :config
-          (setq company-dabbrev-downcase 0)
-          (setq company-idle-delay 0)
-          (setq company-minimum-prefix-length 3)
-          (setq lsp-completion-provider :capf))
-        ; Wich One?
-        (global-company-mode t)
-        (add-hook 'after-init-hook 'global-company-mode)
+    (use-package company
+      :ensure t
+      :config
+      (setq company-dabbrev-downcase 0)
+      (setq company-idle-delay 0)
+      (setq company-minimum-prefix-length 3)
+      (setq lsp-completion-provider :capf))
+    ; Wich One?
+    (global-company-mode t)
+    (add-hook 'after-init-hook 'global-company-mode)
+
+    (setq company-dabbrev-downcase nil)
+
 
   #+end_src
 * Yasnippet
@@ -351,6 +363,19 @@
     (use-package restclient
       :ensure t)
   #+end_src
+* Json
+#+begin_src emacs-lisp
+  (use-package json-mode
+    :ensure t)
+
+  (use-package json-navigator
+    :ensure t)
+#+end_src
+* Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t)
+#+end_src
 * LSP
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -361,6 +386,7 @@
            (java-mode . lsp)
                    (c-mode . lsp)
                    (c++-mode . lsp)
+                   (json-mode . lsp)
                    (lsp-mode . lsp-enable-which-key-integration))
     :commands lsp
     :config
