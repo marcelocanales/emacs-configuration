@@ -1,0 +1,1050 @@
+#+startup:overview indent
+* Benchmark Init
+#+begin_src emacs-lisp
+  ;(use-package benchmark-init
+  ;   :ensure t
+  ;   :config
+     ;; To disable collection of benchmark data after init is done.
+  ;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  ;(benchmark-init/activate)
+#+end_src
+* Interface Tweeks
+#+begin_src emacs-lisp
+  ;; Disable startup message
+  (setq inhibit-startup-message t)
+  ;; Disable tool bar
+  (tool-bar-mode -1)
+  ;; Disable menu bar
+  (menu-bar-mode t)
+  ;; Disable scroll bar
+  (scroll-bar-mode -1)
+  ;; Disable tooltip mode
+  (tooltip-mode -1)
+  ;; Display line numbers
+  (global-display-line-numbers-mode t)
+  ;; Enable line highlight
+  (global-hl-line-mode t)
+  ;; Set fringe mode
+  (set-fringe-mode 10)
+  ;; Visible bell
+  (setq visible-bell t)
+
+  ;; Transparency configuration
+  ;;(set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+  ;;(add-to-list 'default-frame-alist '(alpha . (95 . 80)))
+
+  (setq compilation-scroll-output t)
+#+end_src
+* Font
+#+begin_src emacs-lisp
+  ;;(set-frame-font "Source Code Pro 10" nil t)
+  (add-to-list 'default-frame-alist '(font . "Fira Code-10.8"))
+;;  (set-face-attribute 'default nil :font "Fira Code" :height 10)
+#+end_src
+* Themes
+  #+begin_src emacs-lisp
+    ;; Themes
+    ;; (use-package gruvbox-theme
+    ;;   :ensure t)
+
+    ;; (use-package cyberpunk-theme
+    ;;   :ensure t)
+
+    ;; (use-package zenburn-theme
+    ;;   :ensure t)
+
+    ;; (use-package monokai-theme
+    ;;   :ensure t)
+
+     (use-package doom-themes
+       :ensure t
+       :config
+       (progn
+             (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
+             (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      ;;       (load-theme 'doom-one t)))		
+             (load-theme 'doom-gruvbox t)))		
+                     ;;     (load-theme 'doom-palenight t)))
+                     ;;(load-theme 'doom-solarized-light t)))
+
+  #+end_src
+* Environment Variables
+  #+begin_src emacs-lisp
+    (use-package exec-path-from-shell
+      :ensure t)
+
+    (dolist (var '("JAVA_HOME" "LSP_USE_PLISTS"))
+      (add-to-list 'exec-path-from-shell-variables var))
+
+    (exec-path-from-shell-initialize)
+
+
+    (setq auto-save-file-name-transforms
+              `((".*" ,(concat user-emacs-directory "auto-save/") t))) 
+
+
+    ;; Backups
+    ;; Don't clutter up directories with files~
+    (setq backup-directory-alist `(("." . ,(expand-file-name
+                                            (concat dotfiles-dir "backups")))))
+
+
+    (setq undo-limit 100)
+
+
+  #+end_src
+* Matching Delimiters
+#+begin_src emacs-lisp
+  ;; Electric Pair
+  (electric-pair-mode t)
+#+end_src
+* Wrap and truncate lines
+#+begin_src emacs-lisp
+  (add-hook 'text-mode-hook
+                    '(lambda()
+                           (setq truncate-lines nil word-wrap t)))
+
+  (add-hook 'prog-mode-hook
+                    '(lambda()
+                           (setq truncate-lines t word-wrap nil)))
+#+end_src
+* Global Key Binding
+  #+begin_src emacs-lisp
+    ;; Personal global and generals key binding
+    (global-set-key (kbd "C-z") 'undo)
+  #+end_src
+* Buffers
+  #+begin_src emacs-lisp
+    (defalias 'list-buffers 'ibuffer)
+  #+end_src
+* Ido
+  #+begin_src emacs-lisp
+     (setq ido-enable-flex-matching t)
+     (setq ido-everywhere t)
+     (ido-mode 1)
+  #+end_src
+* Try
+#+begin_src emacs-lisp
+  (use-package try
+    :ensure t)
+#+end_src
+* Org-Mode 
+#+begin_src emacs-lisp
+  ;;    (straight-use-package '(org :type built-in)) TODO REVISAR
+        ;; Org-Mode Stuff
+        (use-package org-bullets
+          :ensure t
+          :custom (org-bullets-bullet-list
+                    '("◉" "○" "●" "○" "●" "○" "●")) (org-ellipsis "⤵")
+          :config
+          (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+
+
+        (custom-set-faces
+         '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+         '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
+         '(org-level-3 ((t (:inherit outline-3 :height 1.05))))
+         '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+         '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+         '(org-level-6 ((t (:inherit outline-5 :height 1.0))))
+         '(org-level-7 ((t (:inherit outline-5 :height 1.0))))   
+         '(org-document-title ((t (:inherit outline-1 :height 1.2))))
+         )
+
+        ;; Org TODO States
+        (setq org-todo-keywords
+                  '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
+
+        ;; Indent mode by default
+      (add-hook 'org-mode-hook 'org-indent-mode)
+
+      ;; Permite colocar atributos para redimencionar imagenes
+      (setq org-image-actual-width nil)
+
+      ;; Inicia mostrando imagenes inline
+      (setq org-startup-with-inline-images t)
+
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    ;;TODO Revisar, al parecer esta provocando errores al inicio.
+    ;;(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+#+end_src
+* Org-Roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :after org
+    :custom
+    (org-roam-directory (file-truename "~/Documents/roam-notes/"))
+    (org-roam-completion-everywhere t)
+    (org-roam-dailies-directory "journal/")
+    (org-roam-capture-templates
+     '(("d" "default" plain
+        "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+           ("l" "programming language" plain
+            "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+           ("b" "books" plain
+            "\n* Información\n\nAutor: %^{Autor}\n\n%?"
+            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+                   ))
+
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n j j" . org-roam-dailies-goto-today)
+           ("C-c n j p" . org-roam-dailies-goto-previous-note)
+           ("C-c n j n" . org-roam-dailies-goto-next-note)
+           ("C-c n j y" . org-roam-dailies-goto-yesterday)
+           ("C-c n j t" . org-roam-dailies-goto-tomorrow)
+           ("C-c n j c" . org-roam-dailies-capture-today)
+                   ("C-c n I" . org-roam-node-insert-immediate)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point))
+    :config
+    (org-roam-setup))
+
+  (add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (slot . 0)
+                 (window-width . 0.25)
+                 (window-parameters . ((no-other-window . t)
+                                       (no-delete-other-windows . t)))))
+  (setq org-roam-mode-sections
+            (list #'org-roam-backlinks-section
+              #'org-roam-reflinks-section
+              #'org-roam-unlinked-references-section
+                          ))
+
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (cons arg args))
+                  (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                                                                    '(:immediate-finish t)))))
+          (apply #'org-roam-node-insert args)))
+#+end_src
+
+* Org-Roam-UI
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    :ensure t
+    ;;  :straight
+    ;;    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    ;;    :after org-roam
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use  
+    :after org-roam  ;; Asegúrate de que org-roam se cargue primero
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t)
+    :hook (org-roam-mode . org-roam-ui-mode))
+#+end_src
+* Babel
+
+#+begin_src emacs-lisp
+  (use-package ob-restclient
+    :ensure t
+    :after org)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((restclient . t))) ;; Asegúrate de que esto esté dentro del bloque donde configuras org-mode o después de cargar org
+
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+* Ace Window
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :init
+    (progn
+      (global-set-key [remap other-window] 'ace-window)
+      (custom-set-faces
+       '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-foreground :height 2.0)))))
+      (setq aw-keys '(?j ?k ?l ?u ?i ?o ?p))
+          (setq aw-ignore-current t)
+      ))
+#+end_src
+* Which Key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
+#+end_src
+* Super Save
+#+begin_src emacs-lisp
+    (use-package super-save
+      :ensure t
+      :config
+      (super-save-mode +1))
+
+    (setq super-save-auto-save-when-idle t)
+
+    ;;Auto Save default disabled
+    (setq auto-save-default nil)
+
+    ;; add integration with ace-window
+    (add-to-list 'super-save-triggers 'ace-window)
+
+    ;; save on find-file
+    (add-to-list 'super-save-hook-triggers 'find-file-hook)
+
+    ;; Turn off super-save remote files
+    (setq super-save-remote-files nil)
+
+    ;; Super save exclude example - Sigue deshabilitado
+    ;;(setq super-save-exclude '(".gpg"))
+#+end_src
+* FZF
+#+begin_src emacs-lisp
+  (use-package fzf
+    :bind
+      ;; Don't forget to set keybinds!
+    :config
+    (setq fzf/args "-x --color bw --print-query --margin=1,0 --no-hscroll"
+          fzf/executable "fzf"
+          fzf/git-grep-args "-i --line-number %s"
+          ;; command used for `fzf-grep-*` functions
+          ;; example usage for ripgrep:
+          ;; fzf/grep-command "rg --no-heading -nH"
+          fzf/grep-command "grep -nrH"
+          ;; If nil, the fzf buffer will appear at the top of the window
+          fzf/position-bottom t
+          fzf/window-height 15))
+#+end_src
+* Counsel
+  #+begin_src emacs-lisp
+    (use-package counsel
+      :ensure t)
+
+    (use-package counsel-projectile
+      :ensure t
+      :config
+      (counsel-projectile-mode 1))
+
+    (defun projectile-counsel-fzf ()
+      "Use `counsel-fzf` to find files in the current project."
+      (interactive)
+      (let ((default-directory (projectile-project-root)))
+        (counsel-fzf nil default-directory)))
+
+
+    (defun projectile-counsel-fzf-respecting-gitignore ()
+      "Use `counsel-fzf` with `fd` to respect .gitignore when finding files in the current project."
+      (interactive)
+      (let ((default-directory (projectile-project-root))
+            (counsel-fzf-cmd "fd . --type f --hidden --follow --exclude .git | fzf -f \"%s\" -0 -1"))
+        (counsel-fzf nil default-directory)))
+
+
+
+    (defun projectile-counsel-fzf-tags ()
+      "Use `counsel-fzf` to search for tags in the current project."
+      (interactive)
+      (let* ((default-directory (projectile-project-root))
+             (tags-file (concat default-directory "tags"))
+             (counsel-fzf-cmd (format "awk '{print $1}' %s | fzf -f '%%s' -0 -1" tags-file))
+             (selected-tag (counsel-fzf nil default-directory)))
+        (when selected-tag
+          (find-tag selected-tag))))
+  #+end_src
+* Swipper
+  #+begin_src emacs-lisp
+    (use-package swiper
+        :ensure try
+        :bind (
+               ("C-s" . swiper)
+               ("C-r" . swiper)
+               ("C-c C-r" . 'ivy-resume)
+               ("M-x" . counsel-M-x)
+               ("C-x C-f" . counsel-find-file)
+              )
+        :config
+        (progn
+          (ivy-mode)
+          (setq ivy-use-virtual-buffers t)
+
+          (setq enable-recursive-minibuffers t)
+          (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+         ))
+
+     (setq ivy-case-fold-search-default t)            ;; ignore case
+  #+end_src
+* Avy
+  #+begin_src emacs-lisp
+    (use-package avy 
+     :ensure t
+     :bind ("M-s" . avy-goto-char) ("C-ñ" . avy-goto-word-1))
+  #+end_src
+* Silversearcher
+#+begin_src emacs-lisp
+  (use-package ag
+    :ensure t
+    :config
+    (setq ag-highlight-search t))
+#+end_src
+* Undo-Tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode t))
+
+  ;; Prevent undo tree files from polluting your git repo
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+#+end_src
+* Indentation
+  #+begin_src emacs-lisp
+    (setq custom-tab-width 4)
+
+    (defun disable-tabs ()
+	      (interactive)
+      (setq indent-tabs-mode nil))
+
+    (defun enable-tabs ()
+	      (interactive)
+      (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+      (setq indent-tabs-mode t)
+      (setq tab-width custom-tab-width))
+
+    ;; Hooks to Enable Tabs
+    (add-hook 'prog-mode-hook 'enable-tabs)
+    ;; Hook to Disable Tabs
+    (add-hook 'lisp-mode-hook 'disable-tabs)
+    (add-hook 'java-mode-hook 'disable-tabs)
+  #+end_src
+* Company
+  #+begin_src emacs-lisp
+    (use-package company
+      :ensure t
+      :config
+      (setq company-transformers '(company-sort-by-occurrence))
+      (setq company-lsp-cache-candidates 'auto)
+      (setq company-lsp-enable-snippet t)
+      (setq company-lsp-async t)
+      (setq company-lsp-enable-recompletion t)
+      (setq company-lsp--text-edit-autosave t)
+      (setq company-dabbrev-downcase 0)
+      (setq company-idle-delay 0.1)
+      (setq company-minimum-prefix-length 2)
+      (setq lsp-completion-provider :capf)
+      (setq lsp-prefer-capf t))
+    ; Wich One?
+    (global-company-mode t)
+    (add-hook 'after-init-hook 'global-company-mode)
+
+    (setq company-dabbrev-downcase nil)
+
+
+  #+end_src
+* Yasnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t)
+
+  (use-package yasnippet-snippets
+    :ensure t)
+
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets/"))
+
+  (yas-global-mode 1)
+
+#+end_src
+* Tree-sitter
+  #+begin_src emacs-lisp
+    ;; Tree sitter
+    (use-package tree-sitter
+      :ensure t
+      :defer t
+      :config
+      (global-tree-sitter-mode t))
+
+    (use-package tree-sitter-langs
+      :defer t
+      :ensure t)
+
+    (use-package treemacs-projectile
+    :after treemacs projectile
+  :defer t
+:ensure t)
+
+  #+end_src
+* All The Icons
+#+begin_src emacs-lisp
+  (use-package all-the-icons
+    :ensure t
+    :if (display-graphic-p))
+
+  (use-package all-the-icons-ivy
+    :ensure t
+    :after all-the-icons ;; Asegura que all-the-icons se cargue primero
+    :config
+    (all-the-icons-ivy-setup))
+
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . all-the-icons-dired-mode))
+#+end_src
+* Treemacs
+  #+begin_src emacs-lisp
+    (use-package treemacs
+      :ensure t
+      :config
+      (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action))
+
+    (use-package treemacs-all-the-icons
+      :ensure t)
+
+    (treemacs-load-theme "all-the-icons")
+    (treemacs-resize-icons 18)
+
+
+  #+end_src
+* Projectile
+  #+begin_src emacs-lisp
+    (use-package projectile
+      :ensure t
+      :init
+      (projectile-mode +1)
+      :bind (:map projectile-mode-map
+                  ("s-p" . projectile-command-map)
+                  ("C-c p" . projectile-command-map))
+      :config
+      (setq projectile-indexing-method 'alien)
+      (setq projectile-enable-caching nil)
+      ;;(setq projectile-generic-command "fd . --type f --hidden --follow --exclude .git")
+      (setq projectile-generic-command "fd . --type f --hidden --follow --exclude .git")
+            
+      ;;(setq projectile-generic-command "fd . --type f")
+      ;;(setq projectile-generic-command "find . -type f")
+
+
+      (projectile-global-mode)
+      ;;(setq projectile-completion-system 'ivy)
+        )
+
+
+    (with-eval-after-load 'projectile
+      (add-to-list 'projectile-project-root-files-bottom-up "pom.xml"))
+
+  #+end_src
+* Counsel Projectile
+#+begin_src emacs-lisp
+  (use-package counsel-projectile
+    :ensure t
+    :config
+    (counsel-projectile-mode))
+#+end_src
+* Flycheck
+  #+begin_src emacs-lisp
+    (use-package flycheck
+      :ensure t)
+  #+end_src
+* Rest Client
+  #+begin_src emacs-lisp
+    (use-package restclient
+      :ensure t)
+  #+end_src
+* HTML
+#+begin_src emacs-lisp
+    (use-package web-mode
+      :ensure t
+      :config
+      (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+          (add-to-list 'auto-mode-alist '("\\.php$" . web-mode))
+  )
+    (setq web-mode-enable-auto-closing t)
+#+end_src
+* Json
+#+begin_src emacs-lisp
+  (use-package json-mode
+    :ensure t)
+
+  (use-package json-navigator
+    :ensure t)
+#+end_src
+* Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t)
+#+end_src
+* Typescript
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :ensure t
+    :defer t)
+#+end_src
+* Python
+#+begin_src emacs-lisp
+  (use-package pyvenv
+    :ensure t
+    :defer t
+    :config
+    (setq pyvenv-virtualenv-root "~/.miniconda/envs")
+    (pyvenv-activate "~/.miniconda/envs/default")
+    (setenv "WORKON_HOME" "~/.miniconda/envs"))
+#+end_src
+* LSP
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :defer t
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    (setq lsp-completion-enable-additional-text-edit t)
+    (setq lsp-use-plists t)
+    :hook (
+                   (conf-javaprop-mode . lsp)
+           (java-mode . lsp)
+           (c-mode . #'lsp-deferred)
+           (c++-mode . #'lsp-deferred)
+           (python-mode . #'lsp-deferred)
+           (json-mode . #'lsp-deferred)
+           (typescript-mode . #'lsp-deferred)
+           (web-mode . #'lsp-deferred)
+           (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+
+
+
+
+    (use-package lsp-ui
+      :ensure t
+          :config
+          (setq lsp-ui-doc-position 'at-point)
+      :commands lsp-ui-mode)
+
+  ;  (use-package lsp-treemacs TODO REVISAR
+  ;    :ensure t
+  ;    :defer t
+  ;    :commands lsp-treemacs-errors-list
+  ;        :config
+  ;        (lsp-treemacs-sync-mode 1)
+  ;)
+
+    (use-package lsp-ivy
+      :ensure t
+      :init
+      :bind
+      (
+       ("C-c l g s" . 'lsp-ivy-workspace-symbol)
+       ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
+      :commands lsp-ivy-workspace-symbol)
+
+
+  (use-package lsp-java
+    :ensure t
+    :hook ((java-mode . lsp))
+    :config
+    (setq lsp-java-vmargs
+          '("-noverify"
+            "-Xmx4G"
+            "-Djvmflags=-Xmx4G -Xms4G"
+            "-XX:+UseZGC"
+            "-XX:+UseStringDeduplication"
+            "-javaagent:/usr/local/share/lombok/lombok.jar"))
+    (setq lsp-java-configuration-runtimes
+          '[
+            (:name "JavaSE-1.6"
+             :path "/opt/oracle/java/jdk1.6.0_45"
+             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+            (:name "JavaSE-1.8"
+             :path "/opt/oracle/java/jdk1.8.0_202"
+             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+            (:name "JavaSE-11"
+             :path "/opt/oracle/java/jdk-11.0.12"
+             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+            (:name "JavaSE-17"
+             :path "/opt/oracle/java/jdk-17.0.1"
+             :default t
+             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+          ])
+    (setq lsp-idle-delay 0.3)
+    (setq lsp-java-auto-build t)
+    ;; Carga lsp-java-boot aquí, asegurándote de que es después de que lsp-java esté cargado
+    ;;(require 'lsp-java-boot) ----> Comentado por errores 
+    ;; Activa las funcionalidades adicionales que ofrece lsp-java-boot
+    (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+    ;;(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode) ----> Comentado por errores
+     )
+
+  ;;   (use-package lsp-java
+  ;;     :ensure t
+  ;;     :hook (
+  ;;                    (java-mode . lsp))
+  ;;     :config
+  ;; ;;;;;    (setq lsp-java-server-install-dir "/opt/lsp/jdtls") comentad
+  ;;     (setq lsp-java-vmargs
+  ;;                   '("-noverify"
+  ;;                     "-Xmx4G"
+  ;;                     "-Djvmflags=-Xmx4G -Xms4G"
+  ;;                     "-XX:+UseZGC"
+  ;;                     "-XX:+UseStringDeduplication"
+  ;;                     "-javaagent:/usr/local/share/lombok/lombok.jar"))
+
+  ;;         (setq lsp-java-configuration-runtimes
+  ;;                   '[
+  ;;                         (
+  ;;                         :name "JavaSE-1.6"
+  ;;                         :path "/opt/oracle/java/jdk1.6.0_45"
+  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+  ;;                         (
+  ;;                         :name "JavaSE-1.8"
+  ;;                         :path "/opt/oracle/java/jdk1.8.0_202"
+  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+  ;;                         (
+  ;;                         :name "JavaSE-11"
+  ;;                         :path "/opt/oracle/java/jdk-11.0.12"
+  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
+  ;;                         (
+  ;;                         :name "JavaSE-17"
+  ;;                         :path "/opt/oracle/java/jdk-17.0.1"
+  ;;                         :default t
+  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"]
+  ;;                         )
+  ;;                                                 ])
+  ;;                                   (setq lsp-idle-delay 0.3)
+
+  ;;                                 (setq lsp-java-auto-build t)
+
+
+
+  ;;                 )
+
+
+
+
+  ;;   ;; SpringBoot Experimental Integrations STS4
+  ;;   ;;Comentado por pruebas de rendimiento
+  ;;   (require 'lsp-java-boot)
+  ;;   ;; to enable the lenses
+  ;;   (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+
+  ;;   ;; Comentado por pruebas de rendimiento
+  ;;   (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+
+
+  ;; Guarda el buffer luego de un code-action
+  (defun my/lsp-save-buffer-after-code-action ()
+    "Save buffer after LSP code action."
+    (when (buffer-modified-p)
+      (save-buffer)))
+
+  (add-hook 'lsp-after-execute-code-action-hook #'my/lsp-save-buffer-after-code-action)
+  #+end_src
+* DAP
+#+begin_src emacs-lisp
+    (use-package dap-mode
+      :ensure t
+      :defer t
+      ;;:after lsp-mode
+      :config
+      (dap-auto-configure-mode)
+      (dap-mode t)
+      (dap-ui-mode t)
+      (dap-tooltip-mode 1)
+      (tooltip-mode 1)
+      (dap-register-debug-template
+       "localhost:8453"
+       (list :type "java"
+             :request "attach"
+             :hostName "localhost"
+             :port 8453
+                     :projectName: "venta")
+       )
+    )
+
+    (use-package dap-java
+      :ensure nil
+      :defer t)
+#+end_src
+* Modeline
+  #+begin_src emacs-lisp
+        ;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
+        (use-package doom-modeline
+          :ensure t
+          :hook (after-init . doom-modeline-mode)
+          :config
+          (progn
+                (setq doom-modeline-height 25)
+                (setq doom-modeline-bar-width 6)
+                (setq doom-modeline-hud nil)
+                (setq doom-modeline-project-detection 'auto)
+                (setq doom-modeline-lsp t)
+                (setq doom-modeline-buffer-encoding t)
+                (setq doom-modeline-checker-simple-format nil)
+                (setq doom-modeline-minor-modes t)
+                (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+                (setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
+                (setq doom-modeline-major-mode-icon t)
+                    (setq doom-modeline-enable-word-count t)
+                ))
+
+        (use-package minions
+          :ensure t
+    ;      :hook doom-modeline-mode
+          :config
+        (minions-mode t))
+
+        (custom-set-faces
+         '(mode-line ((t (:height 0.85))))
+         '(mode-line-inactive ((t (:height 0.85)))))
+  #+end_src
+* Ivy-Rich
+  #+begin_src emacs-lisp
+    (use-package all-the-icons-ivy-rich
+      :ensure t
+      :after ivy-rich ;; Asegúrate de que ivy-rich se cargue primero
+      :config
+      (all-the-icons-ivy-rich-mode 1))
+
+    (use-package ivy-rich
+      :ensure t
+      :after ivy
+      :config
+      (ivy-rich-mode 1)
+      (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+  #+end_src
+  
+* Ivy Postframe
+#+begin_src emacs-lisp
+  ;; (use-package ivy-posframe
+  ;;   :ensure t
+  ;;   :config
+  ;;   (ivy-posframe-mode))
+#+end_src
+* Performance
+#+begin_src emacs-lisp
+  ;;(setq read-process-output-max (* 2048 2048))
+
+  ;;(setq gc-cons-threshold 400000000)
+
+
+
+  ;; Optimizaciones para mejorar el rendimiento de inicio y ejecución de Emacs
+
+  ;; Aumenta la cantidad de datos que Emacs lee de los procesos para mejorar el rendimiento
+  ;; especialmente útil para lsp-mode.
+  (setq read-process-output-max (* 8 1024 1024))
+
+  ;; Aumenta el límite para la recolección de basura durante el inicio para acelerarlo
+  (setq gc-cons-threshold (* 400 1024 1024))
+
+  ;; Restablece el límite de recolección de basura después del inicio a un valor más conservador
+  (defun reset-gc-cons-threshold ()
+    (setq gc-cons-threshold (* 50 1024 1024)))
+
+  (add-hook 'emacs-startup-hook 'reset-gc-cons-threshold)
+#+end_src
+* Emacs Dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
+* EXWM
+#+begin_src emacs-lisp
+  (use-package exwm
+               :ensure t
+               :config
+               (require 'exwm-config)
+                           (require 'exwm-randr)
+                           (require 'exwm-systemtray)
+               (exwm-config-default)
+                           (exwm-randr-enable)
+                          (exwm-systemtray-enable))
+
+
+#+end_src
+* Magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
+#+end_src
+* Custom functions
+** Scroll Control
+#+begin_src emacs-lisp
+    ;; Frames disabble scroll bars
+    (defun my/disable-scroll-bars (frame)
+      (modify-frame-parameters frame
+                               '((vertical-scroll-bars . nil)
+                                 (horizontal-scroll-bars . nil))))
+    (add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
+  #+end_src  
+** Auto Revert
+#+begin_src emacs-lisp
+  ;; Revert Dired and other buffers
+  (setq global-auto-revert-non-file-buffers t)
+
+  ;; Revert buffers when the underlying file has changed
+  (global-auto-revert-mode 1)
+#+end_src
+** json-parse-error workaround
+Reference: [[https://github.com/emacs-lsp/lsp-mode/issues/2681#issuecomment-792563858][https://github.com/emacs-lsp/lsp-mode/issues/2681#issuecomment-792563858]]
+*** Error
+(json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL <callback> 1 113 113)
+*** workaround
+#+begin_src emacs-lisp
+  ;(advice-add 'json-parse-string :around
+  ;                        (lambda (orig string &rest rest)
+  ;                          (apply orig (s-replace "\\u0000" "" string)
+  ;                                         rest)))
+  (advice-add 'json-parse-string :around
+              (lambda (orig string &rest args)
+                (apply orig                                                                            
+                       (replace-regexp-in-string "\\\\u0000.*?\"" "\"" string)
+                       args)))
+#+end_src
+** End of line and newline
+#+begin_src emacs-lisp
+  (defun end-of-line-and-newline ()
+    (interactive)
+    (end-of-line)
+    (newline))
+
+  (global-set-key (kbd "<C-return>") 'end-of-line-and-newline)
+#+end_src
+** End of line and idented newline, except org-mode
+#+begin_src emacs-lisp
+  (defun end-of-line-and-idented-newline ()
+          (interactive)
+          (end-of-line)
+          (newline-and-indent))
+
+  (global-set-key (kbd "<M-return>") 'end-of-line-and-idented-newline)
+
+  ;; Except Org Mode.
+  (defun my-org-mode-hook ()
+    (local-set-key (kbd "<M-return>") 'org-meta-return))
+  (add-hook 'org-mode-hook 'my-org-mode-hook)
+#+end_src
+** Custom key bindings for Org-mode bullet cycling
+These key bindings were customized to avoid conflicts with Gnome keyboard shortcuts.
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook
+                    (lambda ()
+              (local-set-key (kbd "C-c b") 'org-cycle-list-bullet)))
+#+end_src
+- 
+** Save Clipboard Image
+#+begin_src emacs-lisp
+  (defcustom save-clipboard-image-directory "media"
+    "Directorio para guardar las imágenes del portapapeles."
+    :type 'string
+    :group 'save-clipboard-image)
+
+  (defcustom save-clipboard-image-confirm-save nil
+    "Si está habilitado, pide confirmación antes de guardar la imagen."
+    :type 'boolean
+    :group 'save-clipboard-image)
+
+  (defcustom save-clipboard-image-auto-create-directory t
+    "Si está habilitado, crea automáticamente el directorio si no existe."
+    :type 'boolean
+    :group 'save-clipboard-image)
+
+
+  (defcustom save-clipboard-image-prompt-filename nil
+    "Si está habilitado, pide el nombre del archivo antes de guardar la imagen."
+    :type 'boolean
+    :group 'save-clipboard-image)
+
+  (defun save-clipboard-image ()
+    "Guarda el contenido del portapapeles como una imagen en formato `png` en el directorio configurado y devuelve el nombre del archivo de la imagen."
+    (interactive)
+    (let* ((exit-status (with-temp-buffer
+                          (call-process "xclip" nil t nil "-selection" "clipboard" "-t" "image/png" "-o"))))
+      (if (eq exit-status 0)
+          (if (or (not save-clipboard-image-confirm-save)
+                  (y-or-n-p "¿Deseas guardar la imagen en el portapapeles?"))
+              (let* ((dir-name save-clipboard-image-directory)
+                     (default-filename (concat (format-time-string "%Y%m%d_%H%M%S") ".png"))
+                     (filename (if save-clipboard-image-prompt-filename
+                                   (read-file-name "Guardar imagen como: " dir-name nil nil default-filename)
+                                 (concat dir-name "/" default-filename)))
+                     (full-dir-name (expand-file-name dir-name))
+                     (full-filename (expand-file-name filename)))
+                (unless (file-directory-p full-dir-name)
+                  (if save-clipboard-image-auto-create-directory
+                      (make-directory full-dir-name)
+                    (when (y-or-n-p (format "El directorio '%s' no existe. ¿Deseas crearlo?" dir-name))
+                      (make-directory full-dir-name))))
+                (with-temp-file full-filename
+                  (insert (with-temp-buffer
+                            (call-process "xclip" nil t nil "-selection" "clipboard" "-t" "image/png" "-o")
+                            (buffer-string))))
+                (message "Imagen guardada como '%s'" full-filename)
+                full-filename)
+            (progn
+              (message "Guardado de imagen cancelado.")
+              nil))
+        (progn
+          (message "No se encontró una imagen en el portapapeles. Por favor, copia una imagen al portapapeles e intenta nuevamente.")
+          nil))))
+
+#+end_src
+** Insert image link
+#+begin_src emacs-lisp
+   (defcustom org-insert-image-display-inline t
+     "Si está habilitado, muestra la imagen en línea inmediatamente después de insertar el enlace."
+     :type 'boolean
+     :group 'org-insert-image)
+
+
+   (defvar org-insert-image-max-width 400
+     "Ancho máximo para imágenes incrustadas en Org mode.")
+
+   (defun org-insert-image ()
+     "Pega un enlace al archivo de imagen guardado en el directorio configurado y muestra la imagen en línea si está habilitado."
+     (interactive)
+     (let ((image-file-name (save-clipboard-image)))
+       (when image-file-name
+         (let* ((relative-path (file-relative-name image-file-name
+                                                   (file-name-directory (buffer-file-name))))
+                (image-size (image-size (create-image image-file-name) :pixels))
+                (image-width (car image-size))
+                (scaled-width (min org-insert-image-max-width image-width)))
+           (if (= image-width scaled-width)
+               (insert (format "[[file:%s]]" relative-path))
+             (insert (format "#+ATTR_HTML: :width %dpx\n[[file:%s]]" scaled-width relative-path)))
+           (when org-insert-image-display-inline
+             (org-display-inline-images))))))
+
+   (with-eval-after-load 'org
+     (define-key org-mode-map (kbd "C-c i") 'org-insert-image))
+
+
+
+   (defun org-yank-image-or-text ()
+     "Pega una imagen del portapapeles en Org mode si hay una, de lo contrario pega texto."
+     (interactive)
+     (let* ((exit-status (with-temp-buffer
+                           (call-process "xclip" nil t nil "-selection" "clipboard" "-t" "image/png" "-o"))))
+       (if (eq exit-status 0)
+           (org-insert-image)
+         (call-interactively 'org-yank))))
+
+  ; Se comenta ya que al parecer está arrojando problemas.
+  ; (with-eval-after-load 'org
+  ;   (define-key org-mode-map (kbd "C-y") 'org-yank-image-or-text))
+#+end_src
+
