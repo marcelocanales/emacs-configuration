@@ -470,22 +470,28 @@
 #+end_src
 * Tree-sitter
   #+begin_src emacs-lisp
-    ;; Tree sitter
-    (use-package tree-sitter
-      :ensure t
+        ;; Tree sitter
+        (use-package tree-sitter
+          :ensure t
+          :defer t
+          :config
+          (global-tree-sitter-mode t))
+
+        (use-package tree-sitter-langs
+          :defer t
+          :ensure t)
+
+        (use-package treemacs-projectile
+        :after treemacs projectile
       :defer t
-      :config
-      (global-tree-sitter-mode t))
+    :ensure t)
 
-    (use-package tree-sitter-langs
-      :defer t
-      :ensure t)
 
-    (use-package treemacs-projectile
-    :after treemacs projectile
-  :defer t
-:ensure t)
+    ;; Shortcut to jump to the Treemacs window
+    (global-set-key (kbd "C-c t") 'treemacs-select-window)
 
+    ;; Toggle Treemacs with uppercase 'T'
+    (global-set-key (kbd "C-c T") 'treemacs)
   #+end_src
 * All The Icons
 #+begin_src emacs-lisp
@@ -795,7 +801,8 @@
                 (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
                 (setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
                 (setq doom-modeline-major-mode-icon t)
-                    (setq doom-modeline-enable-word-count t)
+                (setq doom-modeline-enable-word-count t)
+                (setq doom-modeline-vcs-max-length 100)
                 ))
 
         (use-package minions
