@@ -1,13 +1,3 @@
-#+startup:overview indent
-* Benchmark Init
-#+begin_src emacs-lisp
-  ;(use-package benchmark-init
-  ;   :ensure t
-  ;   :config
-     ;; To disable collection of benchmark data after init is done.
-  ;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
-  ;(benchmark-init/activate)
-#+end_src
 * Interface Tweeks
 #+begin_src emacs-lisp
   ;; Disable startup message
@@ -29,16 +19,13 @@
   ;; Visible bell
   (setq visible-bell t)
 
-  ;; Transparency configuration
-  ;;(set-frame-parameter (selected-frame) 'alpha '(95 . 80))
-  ;;(add-to-list 'default-frame-alist '(alpha . (95 . 80)))
 
   (setq compilation-scroll-output t)
 #+end_src
 * Font
 #+begin_src emacs-lisp
-  ;;(set-frame-font "Source Code Pro 10" nil t)
-  (add-to-list 'default-frame-alist '(font . "Fira Code-10.8"))
+  ;;(set-frame-font "JetBrains Mono-10" nil t)
+  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10.8"))
 ;;  (set-face-attribute 'default nil :font "Fira Code" :height 10)
 #+end_src
 * Themes
@@ -56,16 +43,15 @@
     ;; (use-package monokai-theme
     ;;   :ensure t)
 
-     (use-package doom-themes
-       :ensure t
-       :config
-       (progn
-             (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
-             (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
-      ;;       (load-theme 'doom-one t)))		
-             (load-theme 'doom-gruvbox t)))		
-                     ;;     (load-theme 'doom-palenight t)))
-                     ;;(load-theme 'doom-solarized-light t)))
+    (use-package doom-themes
+      :ensure t
+      :config
+      (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
+      (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      ;; (load-theme 'doom-gruvbox t)
+      ;;(load-theme 'doom-badger t)
+      (load-theme 'doom-tomorrow-night t)
+      (doom-themes-org-config))
 
   #+end_src
 * Environment Variables
@@ -93,6 +79,22 @@
 
 
   #+end_src
+* System Information
+  #+begin_src emacs-lisp
+    (defvar my-hostname (nth 0 (split-string (shell-command-to-string "hostname"))))
+
+    (defvar my-arch-p (equal my-hostname "arch"))
+    (defvar my-macbook-p (equal my-hostname "ELECTRA.local"))
+
+    (defun display-hostname ()
+      "Display the hostname at startup."
+      (message "Hi Marcelo, Welcome to Emacs! You are on host: %s" my-hostname))
+
+    (add-hook 'emacs-startup-hook 'display-hostname)
+
+    (unless (or my-arch-p my-macbook-p)
+      (error "Hostname '%s' not recognized. Emacs configuration halted." my-hostname))
+  #+end_src
 * Matching Delimiters
 #+begin_src emacs-lisp
   ;; Electric Pair
@@ -110,13 +112,24 @@
 #+end_src
 * Global Key Binding
   #+begin_src emacs-lisp
-    ;; Personal global and generals key binding
+    ;; Personal global and general key bindings
     (global-set-key (kbd "C-z") 'undo)
+    (global-set-key (kbd "M-z") 'undo)  ;; Esto hará que M-z haga undo en ambos sistemas.
+
+    ;; macOS Config
+    (when (eq system-type 'darwin)
+      (setq mac-option-modifier nil)
+      (setq mac-command-modifier 'meta))
   #+end_src
 * Buffers
   #+begin_src emacs-lisp
     (defalias 'list-buffers 'ibuffer)
   #+end_src
+* Ediff
+#+begin_src emacs-lisp
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
 * Ido
   #+begin_src emacs-lisp
      (setq ido-enable-flex-matching t)
@@ -142,14 +155,14 @@
 
 
         (custom-set-faces
-         '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
-         '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
-         '(org-level-3 ((t (:inherit outline-3 :height 1.05))))
+         '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+         '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+         '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
          '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
          '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
          '(org-level-6 ((t (:inherit outline-5 :height 1.0))))
          '(org-level-7 ((t (:inherit outline-5 :height 1.0))))   
-         '(org-document-title ((t (:inherit outline-1 :height 1.2))))
+         '(org-document-title ((t (:inherit outline-1 :height 1.0))))
          )
 
         ;; Org TODO States
@@ -157,8 +170,8 @@
                   '((sequence "TODO(t)" "DOING(g)" "|"   "DONE(d)")))
 
         ;; Indent mode by default
-      (add-hook 'org-mode-hook 'org-indent-mode)
-
+      ;;(add-hook 'org-mode-hook 'org-indent-mode) - Se cambia por org-adapt-indentation (modifica el archivo adaptado a los niveles)
+          (setq org-adapt-indentation t)
       ;; Permite colocar atributos para redimencionar imagenes
       (setq org-image-actual-width nil)
 
@@ -183,7 +196,7 @@
     :ensure t
     :after org
     :custom
-    (org-roam-directory (file-truename "~/Documents/roam-notes/"))
+    (org-roam-directory (file-truename "~/Documents/roam-notes/main"))
     (org-roam-completion-everywhere t)
     (org-roam-dailies-directory "journal/")
     (org-roam-capture-templates
@@ -209,12 +222,13 @@
            ("C-c n j n" . org-roam-dailies-goto-next-note)
            ("C-c n j y" . org-roam-dailies-goto-yesterday)
            ("C-c n j t" . org-roam-dailies-goto-tomorrow)
+           ("C-c n j d" . org-roam-dailies-goto-date)          
            ("C-c n j c" . org-roam-dailies-capture-today)
-                   ("C-c n I" . org-roam-node-insert-immediate)
+           ("C-c n I" . org-roam-node-insert-immediate)
            :map org-mode-map
            ("C-M-i" . completion-at-point))
     :config
-    (org-roam-setup))
+    (org-roam-db-autosync-mode))
 
   (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
@@ -230,14 +244,41 @@
               #'org-roam-unlinked-references-section
                           ))
 
+  (setq org-hide-emphasis-markers t)
+
   (defun org-roam-node-insert-immediate (arg &rest args)
     (interactive "P")
     (let ((args (cons arg args))
                   (org-roam-capture-templates (list (append (car org-roam-capture-templates)
                                                                                                     '(:immediate-finish t)))))
-          (apply #'org-roam-node-insert args)))
-#+end_src
+      (apply #'org-roam-node-insert args)))
 
+
+  (defun org-roam-set-directory ()
+    "Set the org-roam directory by choosing from a predefined list."
+    (interactive)
+    (ivy-read "Choose org-roam directory: "
+              '("~/Documents/roam-notes/main/"
+                "~/Documents/roam-notes/bch/")
+              :action (lambda (dir)
+                        (setq org-roam-directory dir)
+                        (org-roam-db-autosync-mode)
+                        (message "Org-roam directory set to %s" dir))))
+
+
+  (defun my/toggle-org-hide-emphasis-markers ()
+    "Toggle the visibility of emphasis markers in org-mode."
+    (interactive)
+    (if (eq org-hide-emphasis-markers t)
+        (progn
+          (setq org-hide-emphasis-markers nil)
+          (message "Emphasis markers are now visible."))
+      (progn
+        (setq org-hide-emphasis-markers t)
+        (message "Emphasis markers are now hidden.")))
+    (org-mode-restart))
+#+end_src
+    
 * Org-Roam-UI
 #+begin_src emacs-lisp
   (use-package org-roam-ui
@@ -250,12 +291,13 @@
     ;;         if you don't care about startup time, use  
     :after org-roam  ;; Asegúrate de que org-roam se cargue primero
     :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t)
-    :hook (org-roam-mode . org-roam-ui-mode))
+    (setq org-roam-ui-sync-theme t)
+    (setq org-roam-ui-follow t)
+    (setq org-roam-ui-update-on-save t))
+	  ;;org-roam-ui-open-on-start t)
+  ;;  :hook (org-roam-mode . org-roam-ui-mode))
 #+end_src
+
 * Babel
 
 #+begin_src emacs-lisp
@@ -280,8 +322,10 @@
        '(aw-leading-char-face
          ((t (:inherit ace-jump-face-foreground :height 2.0)))))
       (setq aw-keys '(?j ?k ?l ?u ?i ?o ?p))
-          (setq aw-ignore-current t)
-      ))
+      (setq aw-ignore-current t)
+      ;; Añade el advice para ejecutar golden-ratio después de ace-window
+      (advice-add 'ace-window :after 'golden-ratio))
+  )
 #+end_src
 * Which Key
 #+begin_src emacs-lisp
@@ -470,19 +514,22 @@
 #+end_src
 * Tree-sitter
   #+begin_src emacs-lisp
-        ;; Tree sitter
-        (use-package tree-sitter
-          :ensure t
-          :defer t
-          :config
-          (global-tree-sitter-mode t))
 
-        (use-package tree-sitter-langs
-          :defer t
-          :ensure t)
+    (use-package tree-sitter
+      :ensure t)
+    (use-package tree-sitter-langs
+      :ensure t)
 
-        (use-package treemacs-projectile
-        :after treemacs projectile
+    (use-package tree-sitter
+      :config
+      (global-tree-sitter-mode)
+      (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+    (use-package tree-sitter-langs)
+
+
+	(use-package treemacs-projectile
+	:after treemacs projectile
       :defer t
     :ensure t)
 
@@ -609,152 +656,115 @@
     (setenv "WORKON_HOME" "~/.miniconda/envs"))
 #+end_src
 * LSP
-#+begin_src emacs-lisp
-  (use-package lsp-mode
-    :ensure t
-    :defer t
-    :init
-    (setq lsp-keymap-prefix "C-c l")
-    (setq lsp-completion-enable-additional-text-edit t)
-    (setq lsp-use-plists t)
-    :hook (
-                   (conf-javaprop-mode . lsp)
-           (java-mode . lsp)
-           (c-mode . #'lsp-deferred)
-           (c++-mode . #'lsp-deferred)
-           (python-mode . #'lsp-deferred)
-           (json-mode . #'lsp-deferred)
-           (typescript-mode . #'lsp-deferred)
-           (web-mode . #'lsp-deferred)
-           (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
-
-
-
-
-    (use-package lsp-ui
+  #+begin_src emacs-lisp
+      (use-package lsp-mode
       :ensure t
-          :config
-          (setq lsp-ui-doc-position 'at-point)
-      :commands lsp-ui-mode)
-
-  ;  (use-package lsp-treemacs TODO REVISAR
-  ;    :ensure t
-  ;    :defer t
-  ;    :commands lsp-treemacs-errors-list
-  ;        :config
-  ;        (lsp-treemacs-sync-mode 1)
-  ;)
-
-    (use-package lsp-ivy
-      :ensure t
+      :defer t
       :init
-      :bind
-      (
-       ("C-c l g s" . 'lsp-ivy-workspace-symbol)
-       ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
-      :commands lsp-ivy-workspace-symbol)
-
-
-  (use-package lsp-java
-    :ensure t
-    :hook ((java-mode . lsp))
-    :config
-    (setq lsp-java-vmargs
-          '("-noverify"
-            "-Xmx4G"
-            "-Djvmflags=-Xmx4G -Xms4G"
-            "-XX:+UseZGC"
-            "-XX:+UseStringDeduplication"
-            "-javaagent:/usr/local/share/lombok/lombok.jar"))
-    (setq lsp-java-configuration-runtimes
-          '[
-            (:name "JavaSE-1.6"
-             :path "/opt/oracle/java/jdk1.6.0_45"
-             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-            (:name "JavaSE-1.8"
-             :path "/opt/oracle/java/jdk1.8.0_202"
-             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-            (:name "JavaSE-11"
-             :path "/opt/oracle/java/jdk-11.0.12"
-             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-            (:name "JavaSE-17"
-             :path "/opt/oracle/java/jdk-17.0.1"
-             :default t
-             :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-          ])
-    (setq lsp-idle-delay 0.3)
-    (setq lsp-java-auto-build t)
-    ;; Carga lsp-java-boot aquí, asegurándote de que es después de que lsp-java esté cargado
-    ;;(require 'lsp-java-boot) ----> Comentado por errores 
-    ;; Activa las funcionalidades adicionales que ofrece lsp-java-boot
-    (add-hook 'lsp-mode-hook #'lsp-lens-mode)
-    ;;(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode) ----> Comentado por errores
-     )
-
-  ;;   (use-package lsp-java
-  ;;     :ensure t
-  ;;     :hook (
-  ;;                    (java-mode . lsp))
-  ;;     :config
-  ;; ;;;;;    (setq lsp-java-server-install-dir "/opt/lsp/jdtls") comentad
-  ;;     (setq lsp-java-vmargs
-  ;;                   '("-noverify"
-  ;;                     "-Xmx4G"
-  ;;                     "-Djvmflags=-Xmx4G -Xms4G"
-  ;;                     "-XX:+UseZGC"
-  ;;                     "-XX:+UseStringDeduplication"
-  ;;                     "-javaagent:/usr/local/share/lombok/lombok.jar"))
-
-  ;;         (setq lsp-java-configuration-runtimes
-  ;;                   '[
-  ;;                         (
-  ;;                         :name "JavaSE-1.6"
-  ;;                         :path "/opt/oracle/java/jdk1.6.0_45"
-  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-  ;;                         (
-  ;;                         :name "JavaSE-1.8"
-  ;;                         :path "/opt/oracle/java/jdk1.8.0_202"
-  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-  ;;                         (
-  ;;                         :name "JavaSE-11"
-  ;;                         :path "/opt/oracle/java/jdk-11.0.12"
-  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"])
-  ;;                         (
-  ;;                         :name "JavaSE-17"
-  ;;                         :path "/opt/oracle/java/jdk-17.0.1"
-  ;;                         :default t
-  ;;                         :options ["-Do.e.jdt.ls.nullAnalysis=enabled"]
-  ;;                         )
-  ;;                                                 ])
-  ;;                                   (setq lsp-idle-delay 0.3)
-
-  ;;                                 (setq lsp-java-auto-build t)
-
-
-
-  ;;                 )
+      (setq lsp-keymap-prefix "C-c l")
+      (setq lsp-completion-enable-additional-text-edit t)
+      (setq lsp-use-plists t)
+      :hook (
+		     (conf-javaprop-mode . lsp)
+	     (java-mode . lsp)
+	     (c-mode . #'lsp-deferred)
+	     (c++-mode . #'lsp-deferred)
+	     (python-mode . #'lsp-deferred)
+	     (json-mode . #'lsp-deferred)
+	     (typescript-mode . #'lsp-deferred)
+	     (web-mode . #'lsp-deferred)
+	     (lsp-mode . lsp-enable-which-key-integration))
+      :commands lsp)
 
 
 
 
-  ;;   ;; SpringBoot Experimental Integrations STS4
-  ;;   ;;Comentado por pruebas de rendimiento
-  ;;   (require 'lsp-java-boot)
-  ;;   ;; to enable the lenses
-  ;;   (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+	(use-package lsp-ui
+	  :ensure t
+	      :config
+	      (setq lsp-ui-doc-position 'at-point)
+	  :commands lsp-ui-mode)
 
-  ;;   ;; Comentado por pruebas de rendimiento
-  ;;   (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+      ;  (use-package lsp-treemacs TODO REVISAR
+      ;    :ensure t
+      ;    :defer t
+      ;    :commands lsp-treemacs-errors-list
+      ;        :config
+      ;        (lsp-treemacs-sync-mode 1)
+      ;)
+
+	(use-package lsp-ivy
+	  :ensure t
+	  :init
+	  :bind
+	  (
+	   ("C-c l g s" . 'lsp-ivy-workspace-symbol)
+	   ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
+	  :commands lsp-ivy-workspace-symbol)
 
 
-  ;; Guarda el buffer luego de un code-action
-  (defun my/lsp-save-buffer-after-code-action ()
-    "Save buffer after LSP code action."
-    (when (buffer-modified-p)
-      (save-buffer)))
+    (use-package lsp-java
+      :ensure t
+      :hook ((java-mode . lsp))
+      :config
+      (setq lsp-java-vmargs
+	    '("-noverify"
+	      "-Xmx4G"
+	      "-Djvmflags=-Xmx4G -Xms4G"
+	      "-XX:+UseZGC"
+	      "-XX:+UseStringDeduplication"
+	      "-javaagent:/opt/lombok/lombok.jar"))
+      (setq lsp-idle-delay 0.3)
+      (setq lsp-java-auto-build t)
 
-  (add-hook 'lsp-after-execute-code-action-hook #'my/lsp-save-buffer-after-code-action)
+      ;; Different JDK configurations depending on the machine
+      (if my-arch-p
+	  (setq lsp-java-configuration-runtimes
+		'[
+		  (:name "JavaSE-1.6"
+		   :path "/opt/oracle/java/jdk1.6.0_45")
+		  (:name "JavaSE-1.8"
+		   :path "/opt/oracle/java/jdk1.8.0_202")
+		  (:name "JavaSE-11"
+		   :path "/opt/oracle/java/jdk-11.0.12")
+		  (:name "JavaSE-17"
+		   :path "/opt/oracle/java/jdk-17.0.1"
+		   :default t)
+		  ])
+	(if my-macbook-p
+	    (setq lsp-java-configuration-runtimes
+		  '[
+		    (:name "JavaSE-11"
+		     :path "/opt/oracle/java/jdk-11.0.20.jdk/Contents/Home")
+		    (:name "JavaSE-17"
+		     :path "/opt/oracle/java/jdk-17.0.9.jdk/Contents/Home"
+		     :default t)
+		    ])))
+
+      ;; lsp-java supplements
+      ;;(require 'lsp-java-boot) ----> Commented out due to errors
+      (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+      ;;(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode) ----> Commented out due to errors
+      )
+
+
+    ;;   ;; SpringBoot Experimental Integrations STS4
+    ;;   ;;Comentado por pruebas de rendimiento
+    ;;   (require 'lsp-java-boot)
+    ;;   ;; to enable the lenses
+    ;;   (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+
+    ;;   ;; Comentado por pruebas de rendimiento
+    ;;   (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+
+
+    ;; Guarda el buffer luego de un code-action
+    (defun my/lsp-save-buffer-after-code-action ()
+      "Save buffer after LSP code action."
+      (when (buffer-modified-p)
+	(save-buffer)))
+
+    (add-hook 'lsp-after-execute-code-action-hook #'my/lsp-save-buffer-after-code-action)
   #+end_src
 * DAP
 #+begin_src emacs-lisp
@@ -784,36 +794,39 @@
 #+end_src
 * Modeline
   #+begin_src emacs-lisp
-        ;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
-        (use-package doom-modeline
-          :ensure t
-          :hook (after-init . doom-modeline-mode)
-          :config
-          (progn
-                (setq doom-modeline-height 25)
-                (setq doom-modeline-bar-width 6)
-                (setq doom-modeline-hud nil)
-                (setq doom-modeline-project-detection 'auto)
-                (setq doom-modeline-lsp t)
-                (setq doom-modeline-buffer-encoding t)
-                (setq doom-modeline-checker-simple-format nil)
-                (setq doom-modeline-minor-modes t)
-                (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
-                (setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
-                (setq doom-modeline-major-mode-icon t)
-                (setq doom-modeline-enable-word-count t)
-                (setq doom-modeline-vcs-max-length 100)
-                ))
+	;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
+	(use-package doom-modeline
+	  :ensure t
+	  :hook (after-init . doom-modeline-mode)
+	  :config
+	  (progn
+		(setq doom-modeline-height 25)
+		(setq doom-modeline-bar-width 6)
+		(setq doom-modeline-hud nil)
+		(setq doom-modeline-project-detection 'auto)
+		(setq doom-modeline-lsp t)
+		(setq doom-modeline-buffer-encoding t)
+		(setq doom-modeline-checker-simple-format nil)
+		(setq doom-modeline-minor-modes t)
+		(setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+		(setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
+		(setq doom-modeline-major-mode-icon t)
+		(setq doom-modeline-enable-word-count t)
+		(setq doom-modeline-vcs-max-length 100)
+		))
 
-        (use-package minions
-          :ensure t
+	(use-package minions
+	  :ensure t
     ;      :hook doom-modeline-mode
-          :config
-        (minions-mode t))
+	  :config
+	(minions-mode t))
 
-        (custom-set-faces
-         '(mode-line ((t (:height 0.85))))
-         '(mode-line-inactive ((t (:height 0.85)))))
+	(custom-set-faces
+	 '(mode-line ((t (:height 0.85))))
+	 '(mode-line-inactive ((t (:height 0.85)))))
+
+    (setq doom-modeline-icon t)
+    (setq doom-modeline-major-mode-icon t)
   #+end_src
 * Ivy-Rich
   #+begin_src emacs-lisp
@@ -867,20 +880,6 @@
     :ensure t
     :config
     (dashboard-setup-startup-hook))
-#+end_src
-* EXWM
-#+begin_src emacs-lisp
-  (use-package exwm
-               :ensure t
-               :config
-               (require 'exwm-config)
-                           (require 'exwm-randr)
-                           (require 'exwm-systemtray)
-               (exwm-config-default)
-                           (exwm-randr-enable)
-                          (exwm-systemtray-enable))
-
-
 #+end_src
 * Magit
 #+begin_src emacs-lisp
@@ -1054,4 +1053,20 @@ These key bindings were customized to avoid conflicts with Gnome keyboard shortc
   ; (with-eval-after-load 'org
   ;   (define-key org-mode-map (kbd "C-y") 'org-yank-image-or-text))
 #+end_src
+* Adaptative Wrap
+#+begin_src emacs-lisp
+  (use-package adaptive-wrap
+    :ensure t  ; Asegúrate de que el paquete sea instalado automáticamente
+    :config
+    (add-hook 'visual-line-mode-hook 'adaptive-wrap-prefix-mode)
+    (add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode))
+#+end_src
+* Golden Ratio
+#+begin_src emacs-lisp
+  (use-package golden-ratio
+    :ensure t
+    :config
+    (golden-ratio-mode 1))
 
+
+#+end_src
