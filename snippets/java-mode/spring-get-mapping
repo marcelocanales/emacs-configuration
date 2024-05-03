@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: spring-get-mapping
+# key: sgm
+# --
+
+@GetMapping(path = "/${1:path}")
+public ResponseEntity<${2:Object}> ${4:methodName}(){
+	return ResponseEntity.status(HttpStatus.OK).body(new $2());$0
+}
+
+

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: spring-service-implements
+# key: ssi
+# --
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class `(file-name-sans-extension (buffer-name))` implements ${1:Foo} {
+
+	$0
+ 
+}

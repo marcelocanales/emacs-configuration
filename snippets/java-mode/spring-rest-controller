@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: spring-rest-controller
+# key: src
+# --
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/${1:value}")
+public class `(file-name-sans-extension (buffer-name))` {
+
+	$0
+ 
+}

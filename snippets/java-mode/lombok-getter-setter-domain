@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: lombok-getter-setter-domain
+# key: lgsd
+# --
+
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class `(file-name-sans-extension (buffer-name))` {
+
+	private ${1:String} ${2:field};
+	$0
+}
+ 
+
+
+

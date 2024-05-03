@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: private-attribute
+# key: pra
+# --
+
+private ${1:String} ${2:foo};
+$0
