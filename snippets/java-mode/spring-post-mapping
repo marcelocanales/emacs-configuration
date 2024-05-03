@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: spring-post-mapping
+# key: spm
+# --
+@PostMapping(path = "/${1:path}")
+public ResponseEntity<${2:Object}> ${3:methodName}(@RequestBody ${4:InBody} ${5:inBody}){
+	return ResponseEntity.status(HttpStatus.OK).body(new $2());$0
+}
+

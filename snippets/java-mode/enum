@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: emum
+# key: en
+# --
+
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+public enum `(file-name-sans-extension (buffer-name))` {
+	$0
+ 
+}
+
+
+

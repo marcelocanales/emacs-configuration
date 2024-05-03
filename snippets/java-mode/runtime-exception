@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: runtime-exception
+# key: rex
+# --
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+public class `(file-name-sans-extension (buffer-name))` extends RuntimeException{
+
+	$0
+ 
+}

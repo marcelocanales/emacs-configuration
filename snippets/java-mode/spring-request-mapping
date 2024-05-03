@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: spring-request-mapping
+# key: sprm
+# --
+
+@RequestMapping(path = "/${1:path}", method=RequestMethod.${2:GET$$(yas-choose-value '("GET" "POST" "PUT" "DELETE"))})
+public ResponseEntity<${3:Object}> ${4:methodName}(){
+	return ResponseEntity.status(HttpStatus.OK).body(new $3());
+}

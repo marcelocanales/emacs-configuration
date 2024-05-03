@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: public-attribute
+# key: pua
+# --
+
+public ${1:String} ${2:foo};
+$0
