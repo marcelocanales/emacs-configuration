@@ -1,3 +1,19 @@
+* System Information
+  #+begin_src emacs-lisp
+    (defvar my-hostname (nth 0 (split-string (shell-command-to-string "hostname"))))
+
+    (defvar my-arch-p (equal my-hostname "arch"))
+    (defvar my-macbook-p (equal my-hostname "ELECTRA.local"))
+
+    (defun display-hostname ()
+      "Display the hostname at startup."
+      (message "Hi Marcelo, Welcome to Emacs! You are on host: %s" my-hostname))
+
+    (add-hook 'emacs-startup-hook 'display-hostname)
+
+    (unless (or my-arch-p my-macbook-p)
+      (error "Hostname '%s' not recognized. Emacs configuration halted." my-hostname))
+  #+end_src
 * Interface Tweeks
 #+begin_src emacs-lisp
   ;; Disable startup message
@@ -24,9 +40,12 @@
 #+end_src
 * Font
 #+begin_src emacs-lisp
-  ;;(set-frame-font "JetBrains Mono-10" nil t)
-  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10.8"))
-;;  (set-face-attribute 'default nil :font "Fira Code" :height 10)
+  (if my-arch-p
+	  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10.8"))
+    )
+  (if my-macbook-p
+	  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
+    )
 #+end_src
 * Themes
   #+begin_src emacs-lisp
@@ -78,22 +97,6 @@
     (setq undo-limit 100)
 
 
-  #+end_src
-* System Information
-  #+begin_src emacs-lisp
-    (defvar my-hostname (nth 0 (split-string (shell-command-to-string "hostname"))))
-
-    (defvar my-arch-p (equal my-hostname "arch"))
-    (defvar my-macbook-p (equal my-hostname "ELECTRA.local"))
-
-    (defun display-hostname ()
-      "Display the hostname at startup."
-      (message "Hi Marcelo, Welcome to Emacs! You are on host: %s" my-hostname))
-
-    (add-hook 'emacs-startup-hook 'display-hostname)
-
-    (unless (or my-arch-p my-macbook-p)
-      (error "Hostname '%s' not recognized. Emacs configuration halted." my-hostname))
   #+end_src
 * Matching Delimiters
 #+begin_src emacs-lisp
@@ -879,6 +882,11 @@
   (use-package dashboard
     :ensure t
     :config
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-banner-logo-title "Don't Tread on Me")
+    (setq dashboard-center-content t)
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-projects-backend 'projectile)
     (dashboard-setup-startup-hook))
 #+end_src
 * Magit
