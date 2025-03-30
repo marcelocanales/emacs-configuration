@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles version="12">
+  <profile kind="CodeFormatterProfile" name="myProfile" version="12">
+    <!-- Longitud máxima de línea -->
+    <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="120"/>
+    <!-- Formateo de anotaciones -->
+    <setting id="org.eclipse.jdt.core.formatter.formatter.annotation.format" value="true"/>
+    <setting id="org.eclipse.jdt.core.formatter.annotation.format_on_single_line" value="false"/>
+    <setting id="org.eclipse.jdt.core.formatter.annotation.indent_declaration_annotation" value="true"/>
+    <setting id="org.eclipse.jdt.core.formatter.annotation.indent_declared_annotation" value="true"/>
+    <!-- Formateo de parámetros de método -->
+    <setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="16"/>
+    <setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation" value="16"/>
+    <setting id="org.eclipse.jdt.core.formatter.alignment_for_annotations_on_parameters" value="16"/>
+  </profile>
+</profiles>

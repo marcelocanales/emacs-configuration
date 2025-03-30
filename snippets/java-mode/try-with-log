@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: try-with-log
+# key: twl
+# --
+
+try {
+	log.info("Se inicia ${1:operación} ...");
+	$0
+	log.info("${2:Operación} finalizada con éxito.");
+	return ${3:null};
+} catch (Exception e) {
+	log.error("Se produjo un error en ${4:operación}.", e);
+	throw new ${5:RuntimeException}("Se produjo un error en ${4:operación}.", e);
+}

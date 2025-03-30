@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: feign-client-class
+# key: feignclient
+# --
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(name = "${1:`(file-name-base (buffer-file-name))`}", url = "\$\{${2:$$(my-fetch-endpoints)}\}")
+public interface  `(file-name-base (buffer-file-name))`{
+	$0
+}
