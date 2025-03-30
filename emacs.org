@@ -21,7 +21,7 @@
   ;; Disable tool bar
   (tool-bar-mode -1)
   ;; Disable menu bar
-  (menu-bar-mode t)
+  (menu-bar-mode -1)
   ;; Disable scroll bar
   (scroll-bar-mode -1)
   ;; Disable tooltip mode
@@ -30,6 +30,7 @@
   (global-display-line-numbers-mode t)
   ;; Enable line highlight
   (global-hl-line-mode t)
+  
   ;; Set fringe mode
   (set-fringe-mode 10)
   ;; Visible bell
@@ -67,10 +68,14 @@
       :config
       (setq doom-themes-enable-bold t) ; if nil, bold is universally disabled
       (setq doom-themes-enable-italic t) ; if nil, italics is universally disabled
-      ;; (load-theme 'doom-gruvbox t)
+      ;;(load-theme 'doom-gruvbox t)
+      (load-theme 'doom-monokai-pro t)
       ;;(load-theme 'doom-badger t)
-      (load-theme 'doom-tomorrow-night t)
+      ;;(load-theme 'doom-tomorrow-night t)
       (doom-themes-org-config))
+
+    ;;(set-face-attribute 'hl-line nil :background "#665c54" :foreground nil)
+
 
   #+end_src
 * Environment Variables
@@ -123,6 +128,10 @@
     (when (eq system-type 'darwin)
       (setq mac-option-modifier nil)
       (setq mac-command-modifier 'meta))
+
+      (global-set-key (kbd "C-,") (lambda () (interactive) (insert "<")))
+    (global-set-key (kbd "C-.") (lambda () (interactive) (insert ">")))
+
   #+end_src
 * Buffers
   #+begin_src emacs-lisp
@@ -130,14 +139,69 @@
   #+end_src
 * Ediff
 #+begin_src emacs-lisp
-  (setq ediff-split-window-function 'split-window-horizontally)
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; Configuración de ventanas en Ediff
+  (setq
+   ediff-split-window-function 'split-window-horizontally) ;; Divide la ventana en paralelo
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain) ;; Usa una disposición simple
+
+  ;; Resaltar todas las diferencias en los dos buffers (no solo la actual)
+  (setq ediff-highlight-all-diffs t)
+
+  ;; Resaltar diferencias detalladas *dentro* de cada bloque de diferencia
+  (setq ediff-auto-refine 'on) ;;Muestra `fine-diff` SOLO en la diferencia actual
+  ;;(setq ediff-auto-refine 'all)  ;;Muestra 'fine-diff SIEMPRE independiente que sea la diferencia actual
+
+  ;; Evitar ignorar cambios en espacios en blanco al comparar
+  (setq ediff-diff-options "")
+
+  ;; Asegurar que Ediff use colores para resaltar las diferencias
+  (setq ediff-use-faces t)
+
+  ;; No preguntar cada vez si queremos restaurar la configuración previa de ventanas
+  (setq ediff-restore-window-configuration t)
+
+  ;; Asegurar que Ediff no se interponga en la ventana de minibuffer
+  (setq ediff-keep-variants nil)
+
+  (setq ediff-use-long-help-message t) ;; Muestra más detalles en los mensajes de Ediff
+
+
+
+
+  ;; Ediff cuntom set faces
+  (custom-set-faces
+
+   ;; Buffer A con rojo vino apagado
+   '(ediff-odd-diff-A ((t (:background "#7e3535" :foreground "#f2f2f2"))))  ;; Rojo más oscuro para impares, texto gris-blanco
+   '(ediff-even-diff-A ((t (:background "#944545" :foreground "#f2f2f2")))) ;; Rojo medio para pares, texto gris-blanco
+   '(ediff-current-diff-A ((t (:background "#a34f4f" :foreground "#f0e0d6" :weight semi-bold)))) ;; Rojo vino apagado (activo), texto blanco hueso
+   '(ediff-fine-diff-A ((t (:background "#a07a7a" :foreground "black")))) ;; Rojo claro para diferencias finas, texto gris-blanco
+
+   
+   ;; Buffer B (Azul-verdoso)
+   '(ediff-odd-diff-B ((t (:background "#2e657a" :foreground "white"))))
+   '(ediff-even-diff-B ((t (:background "#245366" :foreground "white"))))
+   '(ediff-current-diff-B ((t (:background "#105360" :foreground "white" :weight semi-bold))))
+   '(ediff-fine-diff-B ((t (:background "#83a598" :foreground "black"))))
+
+   ;; Buffer C con verde oliva apagado
+   '(ediff-odd-diff-C ((t (:background "#5e6838" :foreground "#f2f2f2"))))  ;; Verde oliva oscuro
+   '(ediff-even-diff-C ((t (:background "#6d7745" :foreground "#f2f2f2")))) ;; Verde musgo medio
+   '(ediff-current-diff-C ((t (:background "#7b8452" :foreground "#f2f2f2" :weight semi-bold)))) ;; Verde oliva claro (activo)
+   '(ediff-fine-diff-C ((t (:background "#89955f" :foreground "#3c3836")))) ;; Verde amarillento apagado para diferencias finas
+
+   '(ediff-odd-diff-Ancestor ((t (:background "#534b44" :foreground "#f2f2f2"))))  ;; Marrón apagado oscuro
+   '(ediff-even-diff-Ancestor ((t (:background "#665c54" :foreground "#f2f2f2")))) ;; Marrón cálido neutro
+   '(ediff-current-diff-Ancestor ((t (:background "#776d63" :foreground "#f2f2f2" :weight semi-bold)))) ;; Marrón claro más terroso (activo)
+   '(ediff-fine-diff-Ancestor ((t (:background "#8b7f72" :foreground "#3c3836"))))
+   )
+
 #+end_src
 * Ido
   #+begin_src emacs-lisp
-     (setq ido-enable-flex-matching t)
-     (setq ido-everywhere t)
-     (ido-mode 1)
+     ;;(setq ido-enable-flex-matching t)
+     ;;(setq ido-everywhere t)
+     ;;(ido-mode 1)
   #+end_src
 * Try
 #+begin_src emacs-lisp
@@ -323,11 +387,11 @@
       (global-set-key [remap other-window] 'ace-window)
       (custom-set-faces
        '(aw-leading-char-face
-         ((t (:inherit ace-jump-face-foreground :height 2.0)))))
+	 ((t (:inherit ace-jump-face-foreground :height 2.0)))))
       (setq aw-keys '(?j ?k ?l ?u ?i ?o ?p))
-      (setq aw-ignore-current t)
+      (setq aw-ignore-current t))
       ;; Añade el advice para ejecutar golden-ratio después de ace-window
-      (advice-add 'ace-window :after 'golden-ratio))
+  ;;    (advice-add 'ace-window :after 'golden-ratio))
   )
 #+end_src
 * Which Key
@@ -377,22 +441,90 @@
           fzf/position-bottom t
           fzf/window-height 15))
 #+end_src
-* Counsel
+* Ivy/Counsel/Swipper
   #+begin_src emacs-lisp
-    (use-package counsel
-      :ensure t)
-
-    (use-package counsel-projectile
+    ;;; ---------------------------------------------------------------------------
+    ;;; Ivy: el motor de completado
+    ;;; ---------------------------------------------------------------------------
+    (use-package ivy
       :ensure t
       :config
+      ;; Activa ivy-mode de manera global en Emacs,
+      ;; sustituyendo el completado nativo por un sistema incremental y flexible.
+      (ivy-mode 1)
+
+      ;; Ajustes típicos de Ivy:
+      ;; - ivy-use-virtual-buffers: Muestra también en los candidatos
+      ;;   los archivos recientemente abiertos y marcadores.
+      ;; - enable-recursive-minibuffers: Permite abrir otro minibuffer
+      ;;   mientras ya estás en uno (útil en ocasiones).
+      ;; - ivy-case-fold-search-default: Ignora mayúsculas/minúsculas al buscar.
+      (setq ivy-use-virtual-buffers t
+            enable-recursive-minibuffers t
+            ivy-case-fold-search-default t)
+
+      ;; Mapeamos C-r en el minibuffer de "M-:" (eval-expression)
+      ;; para poder buscar en el historial con interfaz Ivy.
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+
+
+    ;;; ---------------------------------------------------------------------------
+    ;;; Counsel: comandos integrados con Ivy
+    ;;; ---------------------------------------------------------------------------
+    (use-package counsel
+      :ensure t
+      :after ivy
+      :bind (
+        ;; Reemplaza M-x con counsel-M-x para un completado mejorado con Ivy.
+        ("M-x"     . counsel-M-x)
+        ;; Reemplaza C-x C-f con counsel-find-file para abrir archivos con Ivy.
+        ("C-x C-f" . counsel-find-file)
+        ;; Aquí podrías añadir más atajos, por ejemplo:
+        ;; ("C-c g" . counsel-git)         ;; Buscar ficheros en un repo Git
+        ;; ("C-c j" . counsel-git-grep)    ;; Buscar texto en un repo Git
+        )
+      :config
+      ;; counsel-mode hace que varios comandos nativos de Emacs (ej. find-file,
+      ;; describe-function, describe-variable) pasen a usar la interfaz de Counsel.
+      (counsel-mode 1))
+
+
+    ;;; ---------------------------------------------------------------------------
+    ;;; Swiper: búsqueda incremental en el buffer
+    ;;; ---------------------------------------------------------------------------
+    (use-package swiper
+      :ensure t
+      :after ivy
+      :bind (
+        ;; Reemplaza C-s y C-r con Swiper para búsquedas incrementales.
+        ("C-s"   . swiper)
+        ("C-r"   . swiper)
+        ;; Retomar la última búsqueda con "C-c C-r"
+        ("C-c C-r" . ivy-resume))
+      :config
+      ;; Aquí no necesitas volver a activar `ivy-mode`, porque ya lo hace el bloque anterior.
+      ;; Podrías añadir ajustes propios de Swiper si los necesitas.
+      )
+
+
+    ;;; ---------------------------------------------------------------------------
+    ;;; Counsel Projectile: integrar Projectile con Counsel/Ivy
+    ;;; ---------------------------------------------------------------------------
+    (use-package counsel-projectile
+      :ensure t
+      :after (counsel projectile)
+      :config
+      ;; counsel-projectile-mode unifica las funciones de Projectile con la interfaz de Counsel,
+      ;; facilitando búsquedas de ficheros, buffers, etc., en proyectos.
       (counsel-projectile-mode 1))
 
+    ;; Ejemplo de funciones personalizadas que invocan counsel-fzf junto con Projectile.
+    ;; Puedes usarlas para buscar archivos, respetar .gitignore, o buscar tags.
     (defun projectile-counsel-fzf ()
       "Use `counsel-fzf` to find files in the current project."
       (interactive)
       (let ((default-directory (projectile-project-root)))
         (counsel-fzf nil default-directory)))
-
 
     (defun projectile-counsel-fzf-respecting-gitignore ()
       "Use `counsel-fzf` with `fd` to respect .gitignore when finding files in the current project."
@@ -400,8 +532,6 @@
       (let ((default-directory (projectile-project-root))
             (counsel-fzf-cmd "fd . --type f --hidden --follow --exclude .git | fzf -f \"%s\" -0 -1"))
         (counsel-fzf nil default-directory)))
-
-
 
     (defun projectile-counsel-fzf-tags ()
       "Use `counsel-fzf` to search for tags in the current project."
@@ -412,28 +542,6 @@
              (selected-tag (counsel-fzf nil default-directory)))
         (when selected-tag
           (find-tag selected-tag))))
-  #+end_src
-* Swipper
-  #+begin_src emacs-lisp
-    (use-package swiper
-        :ensure try
-        :bind (
-               ("C-s" . swiper)
-               ("C-r" . swiper)
-               ("C-c C-r" . 'ivy-resume)
-               ("M-x" . counsel-M-x)
-               ("C-x C-f" . counsel-find-file)
-              )
-        :config
-        (progn
-          (ivy-mode)
-          (setq ivy-use-virtual-buffers t)
-
-          (setq enable-recursive-minibuffers t)
-          (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-         ))
-
-     (setq ivy-case-fold-search-default t)            ;; ignore case
   #+end_src
 * Avy
   #+begin_src emacs-lisp
@@ -526,13 +634,18 @@
     (use-package tree-sitter
       :config
       (global-tree-sitter-mode)
+      (set-face-attribute 'tree-sitter-hl-face:attribute nil
+    					      :weight 'normal)
+      (set-face-attribute 'tree-sitter-hl-face:string nil
+    					      :slant 'italic
+    					      :weight 'light)
       (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
     (use-package tree-sitter-langs)
 
 
-	(use-package treemacs-projectile
-	:after treemacs projectile
+    	(use-package treemacs-projectile
+    	:after treemacs projectile
       :defer t
     :ensure t)
 
@@ -602,13 +715,6 @@
       (add-to-list 'projectile-project-root-files-bottom-up "pom.xml"))
 
   #+end_src
-* Counsel Projectile
-#+begin_src emacs-lisp
-  (use-package counsel-projectile
-    :ensure t
-    :config
-    (counsel-projectile-mode))
-#+end_src
 * Flycheck
   #+begin_src emacs-lisp
     (use-package flycheck
@@ -648,16 +754,6 @@
     :ensure t
     :defer t)
 #+end_src
-* Python
-#+begin_src emacs-lisp
-  (use-package pyvenv
-    :ensure t
-    :defer t
-    :config
-    (setq pyvenv-virtualenv-root "~/.miniconda/envs")
-    (pyvenv-activate "~/.miniconda/envs/default")
-    (setenv "WORKON_HOME" "~/.miniconda/envs"))
-#+end_src
 * LSP
   #+begin_src emacs-lisp
       (use-package lsp-mode
@@ -668,25 +764,37 @@
       (setq lsp-completion-enable-additional-text-edit t)
       (setq lsp-use-plists t)
       :hook (
-		     (conf-javaprop-mode . lsp)
-	     (java-mode . lsp)
-	     (c-mode . #'lsp-deferred)
-	     (c++-mode . #'lsp-deferred)
-	     (python-mode . #'lsp-deferred)
-	     (json-mode . #'lsp-deferred)
-	     (typescript-mode . #'lsp-deferred)
-	     (web-mode . #'lsp-deferred)
-	     (lsp-mode . lsp-enable-which-key-integration))
+    		     (conf-javaprop-mode . lsp)
+    	     (java-mode . lsp)
+    	     (c-mode . #'lsp-deferred)
+    	     (c++-mode . #'lsp-deferred)
+    	     (python-mode . #'lsp-deferred)
+    	     (json-mode . #'lsp-deferred)
+    	     (typescript-mode . #'lsp-deferred)
+    	     (web-mode . #'lsp-deferred)
+    	     (lsp-mode . lsp-enable-which-key-integration))
       :commands lsp)
 
 
 
 
-	(use-package lsp-ui
-	  :ensure t
-	      :config
-	      (setq lsp-ui-doc-position 'at-point)
-	  :commands lsp-ui-mode)
+    ;;	(use-package lsp-ui
+    ;;	  :ensure t
+    ;;	      :config
+    ;;	      (setq lsp-ui-doc-position 'at-point)
+    ;;	  :commands lsp-ui-mode)
+
+
+    (use-package lsp-ui
+      :ensure t
+      :config
+      (setq lsp-ui-doc-enable t)
+      (setq lsp-ui-doc-show-with-cursor t)
+      (setq lsp-ui-doc-position 'at-point)
+      (setq lsp-ui-sideline-enable t)
+      (setq lsp-ui-sideline-show-diagnostics t)
+      (setq lsp-ui-sideline-show-hover t))
+
 
       ;  (use-package lsp-treemacs TODO REVISAR
       ;    :ensure t
@@ -696,14 +804,14 @@
       ;        (lsp-treemacs-sync-mode 1)
       ;)
 
-	(use-package lsp-ivy
-	  :ensure t
-	  :init
-	  :bind
-	  (
-	   ("C-c l g s" . 'lsp-ivy-workspace-symbol)
-	   ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
-	  :commands lsp-ivy-workspace-symbol)
+    	(use-package lsp-ivy
+    	  :ensure t
+    	  :init
+    	  :bind
+    	  (
+    	   ("C-c l g s" . 'lsp-ivy-workspace-symbol)
+    	   ("C-c l g S" . 'lsp-ivy-global-workspace-symbol))  
+    	  :commands lsp-ivy-workspace-symbol)
 
 
     (use-package lsp-java
@@ -711,38 +819,38 @@
       :hook ((java-mode . lsp))
       :config
       (setq lsp-java-vmargs
-	    '("-noverify"
-	      "-Xmx4G"
-	      "-Djvmflags=-Xmx4G -Xms4G"
-	      "-XX:+UseZGC"
-	      "-XX:+UseStringDeduplication"
-	      "-javaagent:/opt/lombok/lombok.jar"))
+    	    '("-noverify"
+    	      "-Xmx4G"
+    	      "-Djvmflags=-Xmx4G -Xms4G"
+    	      "-XX:+UseZGC"
+    	      "-XX:+UseStringDeduplication"
+    	      "-javaagent:/opt/lombok/lombok.jar"))
       (setq lsp-idle-delay 0.3)
       (setq lsp-java-auto-build t)
 
       ;; Different JDK configurations depending on the machine
       (if my-arch-p
-	  (setq lsp-java-configuration-runtimes
-		'[
-		  (:name "JavaSE-1.6"
-		   :path "/opt/oracle/java/jdk1.6.0_45")
-		  (:name "JavaSE-1.8"
-		   :path "/opt/oracle/java/jdk1.8.0_202")
-		  (:name "JavaSE-11"
-		   :path "/opt/oracle/java/jdk-11.0.12")
-		  (:name "JavaSE-17"
-		   :path "/opt/oracle/java/jdk-17.0.1"
-		   :default t)
-		  ])
-	(if my-macbook-p
-	    (setq lsp-java-configuration-runtimes
-		  '[
-		    (:name "JavaSE-11"
-		     :path "/opt/oracle/java/jdk-11.0.20.jdk/Contents/Home")
-		    (:name "JavaSE-17"
-		     :path "/opt/oracle/java/jdk-17.0.9.jdk/Contents/Home"
-		     :default t)
-		    ])))
+    	  (setq lsp-java-configuration-runtimes
+    		'[
+    		  ;;(:name "JavaSE-1.6"
+    		  ;; :path "/opt/oracle/java/jdk1.6.0_45")
+    		  (:name "JavaSE-1.8"
+    		   :path "/opt/oracle/java/jdk1.8.0_202")
+    		  (:name "JavaSE-11"
+    		   :path "/opt/oracle/java/jdk-11.0.12")
+    		  (:name "JavaSE-17"
+    		   :path "/opt/oracle/java/jdk-17.0.1"
+    		   :default t)    		  
+    		  ])
+    	(if my-macbook-p
+    	    (setq lsp-java-configuration-runtimes
+    		  '[
+    		    (:name "JavaSE-11"
+    		     :path "/opt/oracle/java/jdk-11.0.20.jdk/Contents/Home")
+    		    (:name "JavaSE-17"
+    		     :path "/opt/oracle/java/jdk-17.0.9.jdk/Contents/Home"
+    		     :default t)
+    		    ])))
 
       ;; lsp-java supplements
       ;;(require 'lsp-java-boot) ----> Commented out due to errors
@@ -765,7 +873,7 @@
     (defun my/lsp-save-buffer-after-code-action ()
       "Save buffer after LSP code action."
       (when (buffer-modified-p)
-	(save-buffer)))
+    	(save-buffer)))
 
     (add-hook 'lsp-after-execute-code-action-hook #'my/lsp-save-buffer-after-code-action)
   #+end_src
@@ -795,38 +903,69 @@
       :ensure nil
       :defer t)
 #+end_src
+* Python
+#+begin_src emacs-lisp
+  (use-package pyvenv
+    :ensure t
+    :defer t
+    :config
+    (setq pyvenv-virtualenv-root "~/.miniconda/envs")
+    (pyvenv-activate "~/.miniconda/envs/default")
+    (setenv "WORKON_HOME" "~/.miniconda/envs"))
+
+
+  (use-package lsp-pyright
+    :ensure t
+    :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-pyright)
+                            (lsp))))  ; or lsp-deferred
+
+  (setq lsp-pyright-venv-path "~/.miniconda/envs")
+  (setq lsp-disabled-clients '((python-mode . pylsp)))
+
+  (use-package conda
+  :ensure t
+  :init
+  (setq conda-anaconda-home "~/.miniconda")
+  (setq conda-env-home-directory "~/.miniconda")
+  :config
+  (conda-env-autoactivate-mode t))
+
+
+#+end_src
 * Modeline
   #+begin_src emacs-lisp
-	;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
-	(use-package doom-modeline
-	  :ensure t
-	  :hook (after-init . doom-modeline-mode)
-	  :config
-	  (progn
-		(setq doom-modeline-height 25)
-		(setq doom-modeline-bar-width 6)
-		(setq doom-modeline-hud nil)
-		(setq doom-modeline-project-detection 'auto)
-		(setq doom-modeline-lsp t)
-		(setq doom-modeline-buffer-encoding t)
-		(setq doom-modeline-checker-simple-format nil)
-		(setq doom-modeline-minor-modes t)
-		(setq doom-modeline-buffer-file-name-style 'truncate-except-project)
-		(setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
-		(setq doom-modeline-major-mode-icon t)
-		(setq doom-modeline-enable-word-count t)
-		(setq doom-modeline-vcs-max-length 100)
-		))
+    ;; This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so. Please refer to the installation guide.
+    	(use-package doom-modeline
+    	  :ensure t
+    	  :hook (after-init . doom-modeline-mode)
+    	  :config
+    	  (progn
+    		(setq doom-modeline-height 25)
+    		(setq doom-modeline-bar-width 6)
+    		(setq doom-modeline-hud nil)
+    		(setq doom-modeline-project-detection 'auto)
+    		(setq doom-modeline-lsp t)
+    		(setq doom-modeline-buffer-encoding t)
+    		(setq doom-modeline-checker-simple-format nil)
+    		(setq doom-modeline-minor-modes t)
+    		(setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+    		(setq doom-modeline-persp-name nil) ;; Revisar que hace esto, 
+    		(setq doom-modeline-major-mode-icon t)
+    		(setq doom-modeline-enable-word-count t)
+    		(setq doom-modeline-vcs-max-length 100)
+    		))
 
-	(use-package minions
-	  :ensure t
+    	(use-package minions
+    	  :ensure t
     ;      :hook doom-modeline-mode
-	  :config
-	(minions-mode t))
+    	  :config
+    	(minions-mode t))
 
-	(custom-set-faces
-	 '(mode-line ((t (:height 0.85))))
-	 '(mode-line-inactive ((t (:height 0.85)))))
+    	(custom-set-faces
+    	 '(mode-line ((t (:height 0.85))))
+    	 '(mode-line-inactive ((t (:height 0.85)))))
 
     (setq doom-modeline-icon t)
     (setq doom-modeline-major-mode-icon t)
@@ -893,6 +1032,23 @@
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t)
+#+end_src
+* Adaptative Wrap
+#+begin_src emacs-lisp
+  (use-package adaptive-wrap
+    :ensure t  ; Asegúrate de que el paquete sea instalado automáticamente
+    :config
+    (add-hook 'visual-line-mode-hook 'adaptive-wrap-prefix-mode)
+    (add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode))
+#+end_src
+* Golden Ratio
+#+begin_src emacs-lisp
+  ;; (use-package golden-ratio
+  ;;   :ensure t
+  ;;   :config
+  ;;   (golden-ratio-mode 1))
+
+
 #+end_src
 * Custom functions
 ** Scroll Control
@@ -1071,10 +1227,27 @@ These key bindings were customized to avoid conflicts with Gnome keyboard shortc
 #+end_src
 * Golden Ratio
 #+begin_src emacs-lisp
-  (use-package golden-ratio
-    :ensure t
-    :config
-    (golden-ratio-mode 1))
-
-
+  ;; (use-package golden-ratio
+  ;;   :ensure t
+  ;;   :config
+  ;;   (golden-ratio-mode 1))
 #+end_src
+
+* PlantUML
+  #+begin_src emacs-lisp
+    (use-package plantuml-mode
+      :ensure t
+      :config
+      (setq plantuml-executable-path "/usr/bin/plantuml")
+      (setq plantuml-default-exec-mode 'executable))
+  #+end_src
+* Nginx Mode
+  #+begin_src emacs-lisp
+    (use-package nginx-mode
+      :ensure t
+      :commands nginx-mode)
+      #+end_src
+
+
+
+  
