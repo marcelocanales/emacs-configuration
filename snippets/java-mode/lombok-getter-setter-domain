@@ -6,10 +6,12 @@
 package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class `(file-name-sans-extension (buffer-name))` {
 
 	private ${1:String} ${2:field};
